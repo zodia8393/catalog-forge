@@ -6,10 +6,10 @@ import NavLinks from "./nav-links";
 export const metadata: Metadata = {
   metadataBase: new URL("https://zodia8393.github.io"),
   title: "CatalogForge | 복원력 있는 상품 데이터 수집",
-  description: "1,022건 실제 실행으로 증명한 웹 수집, 429 복구, 구조 변경 감지 파이프라인",
+  description: "직접 입력하는 실시간 파서와 1,022건 실제 실행으로 증명한 웹 수집·복구 파이프라인",
   openGraph: {
     title: "CatalogForge | 복원력 있는 상품 데이터 수집",
-    description: "실제 run UUID와 attempt 근거로 확인하는 상품 데이터 수집 파이프라인",
+    description: "HTML을 직접 입력해 구조화 결과를 보고, 실제 run UUID와 attempt 근거까지 확인하세요.",
     type: "website",
     url: "https://zodia8393.github.io/catalog-forge/",
   },

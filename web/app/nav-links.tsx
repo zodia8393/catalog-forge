@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   ["한눈에 보기", "/"],
+  ["실시간 체험", "/playground/"],
   ["수집 실행", "/runs/"],
   ["상품 데이터", "/products/"],
   ["샘플 데이터", "/samples/"],

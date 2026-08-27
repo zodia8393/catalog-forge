@@ -61,13 +61,13 @@ export default function Overview() {
         </div>
         <div className="top-actions">
           <span className={"mode " + (mode === "live" ? "live" : "recorded")}>{mode === "live" ? "실시간 API" : "실제 실행 기록"}</span>
-          <Link className="action-link" href="/samples/">실행 증거 보기 <span>→</span></Link>
+          <Link className="action-link primary-action" href="/playground/">직접 입력해보기 <span>→</span></Link>
         </div>
       </header>
       <section className="demo-note" aria-label="데모 안내">
         <strong>실제 실행으로 만든 읽기 전용 snapshot입니다.</strong>
         <span>{recordedAt} KST에 외부 sandbox 수집과 로컬 장애 주입 pipeline을 실행해 기록했습니다.</span>
-        <Link href="/samples/">입력부터 결과까지 보기 →</Link>
+        <Link href="/playground/">내 HTML로 실시간 체험 →</Link>
       </section>
       <section className="metrics">
         <Metric label="최종 수집 성공률" value={success + "%"} note={"대상 " + completed.toLocaleString() + "건 실제 처리"} tone="good" />

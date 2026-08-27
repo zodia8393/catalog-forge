@@ -3,11 +3,11 @@
 [![CI](https://github.com/zodia8393/catalog-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/zodia8393/catalog-forge/actions/workflows/ci.yml)
 [![Pages](https://github.com/zodia8393/catalog-forge/actions/workflows/pages.yml/badge.svg)](https://github.com/zodia8393/catalog-forge/actions/workflows/pages.yml)
 
-**[한국어 라이브 데모](https://zodia8393.github.io/catalog-forge/)** · [실제 실행 JSON](https://zodia8393.github.io/catalog-forge/sample-products.json) · [시스템 설계](docs/system_design.md)
+**[실시간 파싱 체험](https://zodia8393.github.io/catalog-forge/playground/)** · [운영 화면](https://zodia8393.github.io/catalog-forge/) · [실제 실행 JSON](https://zodia8393.github.io/catalog-forge/sample-products.json) · [시스템 설계](docs/system_design.md)
 
 여러 쇼핑몰의 상품 페이지를 동시에 수집하고, 서로 다른 문서 구조를 하나의 상품 형식으로 바꾸는 **웹 데이터 수집·운영 시스템**입니다. 일시적인 요청 실패, 작업자 중단, 사이트 구조 변경이 발생해도 데이터가 유실되거나 잘못 저장되지 않도록 설계했습니다.
 
-> 공개 데모는 외부 사이트를 계속 수집하는 운영 API가 아니라, **실제 pipeline을 실행해 생성한 읽기 전용 snapshot**입니다. 화면의 run UUID, 시각, attempt, 상품, 검수 항목은 손으로 만든 예시가 아닙니다.
+> 공개 데모의 **실시간 체험**은 입력 HTML을 browser 안에서 즉시 파싱하며, 운영 화면은 **실제 pipeline을 실행해 생성한 읽기 전용 snapshot**입니다. URL proxy나 공개 쓰기 API는 노출하지 않습니다.
 
 ## 30초 요약
 
@@ -27,9 +27,9 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
 
 ## 지원 검토자를 위한 90초 동선
 
-1. [한눈에 보기](https://zodia8393.github.io/catalog-forge/)에서 1,022건 성공, 429 복구, 유실·중복 결과를 확인합니다.
-2. [샘플 데이터](https://zodia8393.github.io/catalog-forge/samples/)에서 공개 수집·retry·schema drift의 실제 입력과 attempt 근거를 확인합니다.
-3. 아래 검증 표와 [재현 명령](#직접-검증)으로 같은 결과를 어떻게 다시 만드는지 확인합니다.
+1. [실시간 체험](https://zodia8393.github.io/catalog-forge/playground/)에서 HTML의 상품명·가격을 바꾸고 JSON과 confidence가 즉시 갱신되는지 확인합니다.
+2. [한눈에 보기](https://zodia8393.github.io/catalog-forge/)에서 1,022건 성공, 429 복구, 유실·중복 결과를 확인합니다.
+3. [샘플 데이터](https://zodia8393.github.io/catalog-forge/samples/)에서 공개 수집·retry·schema drift의 실제 attempt 근거를 확인합니다.
 
 ## 검증된 결과
 
@@ -51,6 +51,7 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
 
 ## 라이브 데모에서 볼 수 있는 것
 
+- **[실시간 체험](https://zodia8393.github.io/catalog-forge/playground/):** HTML 직접 입력 → 실시간 Product JSON·coverage·confidence·field evidence
 - **한눈에 보기:** 실제 run 3개의 성공률, 복구한 429, 유실·중복, 선택한 상품의 필수 필드
 - **수집 실행:** 실제 UUID와 생성 시각, 상태별 건수, 장애 복구 순서
 - **상품 데이터:** DB에 저장된 실제 product UUID, 값, 신뢰도, 문서 구조 지문, 검수 여부
@@ -59,6 +60,8 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
 ## 실제 입출력 샘플
 
 공개 스크래핑 sandbox에 실제 요청해 가져온 상품 1건은 다음과 같이 공통 상품 형식으로 바뀝니다. 429 오류 복구와 문서 구조 변경도 로컬 ASGI fixture에 실제 요청해 검증했습니다. run·attempt·product·review 전체 기록은 [실제 실행 JSON](web/public/sample-products.json)으로 내려받을 수 있습니다.
+
+[실시간 체험](https://zodia8393.github.io/catalog-forge/playground/)에서는 아래 HTML을 직접 편집할 수 있습니다. 입력할 때마다 JSON, 필수 필드 coverage, confidence, DOM fingerprint, field evidence와 품질 gate 판단을 같은 화면에서 다시 계산합니다.
 
 ~~~text
 입력 HTML
@@ -80,6 +83,8 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
   "review_required": false
 }
 ~~~
+
+![CatalogForge 실시간 HTML 파싱 체험](docs/playground-preview.png)
 
 ![CatalogForge 입력부터 결과까지 샘플 화면](docs/sample-data-preview.png)
 
