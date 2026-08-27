@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   displayConnector,
   displayStatus,
@@ -12,7 +13,7 @@ import {
   type Run,
 } from "./data";
 
-const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8100";
+const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 function Metric({ label, value, note, tone = "" }: { label: string; value: string; note: string; tone?: string }) {
   return (
@@ -29,6 +30,7 @@ export default function Overview() {
   const [mode, setMode] = useState<"replay" | "live">("replay");
 
   useEffect(() => {
+    if (!apiBase) return;
     const controller = new AbortController();
     fetch(apiBase + "/api/v1/crawl-runs?limit=20", { signal: controller.signal })
       .then((response) => response.ok ? response.json() : Promise.reject())
@@ -57,11 +59,15 @@ export default function Overview() {
           <h1>상품 데이터 수집 상태를 한눈에</h1>
           <p>수집부터 구조화, 장애 복구, 사람 검수까지 한 화면에서 추적합니다.</p>
         </div>
-        <span className={"mode " + mode}>{mode === "live" ? "실시간 API" : "실제 실행 기록"}</span>
+        <div className="top-actions">
+          <span className={"mode " + (mode === "live" ? "live" : "recorded")}>{mode === "live" ? "실시간 API" : "실제 실행 기록"}</span>
+          <Link className="action-link" href="/samples/">실행 증거 보기 <span>→</span></Link>
+        </div>
       </header>
       <section className="demo-note" aria-label="데모 안내">
         <strong>실제 실행으로 만든 읽기 전용 snapshot입니다.</strong>
         <span>{recordedAt} KST에 외부 sandbox 수집과 로컬 장애 주입 pipeline을 실행해 기록했습니다.</span>
+        <Link href="/samples/">입력부터 결과까지 보기 →</Link>
       </section>
       <section className="metrics">
         <Metric label="최종 수집 성공률" value={success + "%"} note={"대상 " + completed.toLocaleString() + "건 실제 처리"} tone="good" />
@@ -88,7 +94,7 @@ export default function Overview() {
           <ol className="timeline">{replayTimeline.map((item, index) => <li key={item.time}><span className={index === replayTimeline.length - 1 ? "done" : ""} /><time>{item.time}</time><div><strong>{item.event}</strong><small>{item.detail}</small></div></li>)}</ol>
         </section>
       </div>
-      <section className="panel runs-panel"><div className="panel-head"><div><span className="eyebrow">최근 활동</span><h2>수집 실행 기록</h2></div><a href="./runs/">전체 실행 보기 →</a></div>
+      <section className="panel runs-panel"><div className="panel-head"><div><span className="eyebrow">최근 활동</span><h2>수집 실행 기록</h2></div><Link href="/runs/">전체 실행 보기 →</Link></div>
         <div className="table-wrap"><table><thead><tr><th>실행 ID</th><th>수집처</th><th>상태</th><th>성공</th><th>재시도 중</th><th>실패</th></tr></thead><tbody>{runs.map(run => <tr key={run.id}><td className="mono">{run.id.slice(0,18)}</td><td>{displayConnector(run.connector)}</td><td><span className={"status " + run.status}>{displayStatus(run.status)}</span></td><td>{run.succeeded.toLocaleString()}</td><td>{run.retrying}</td><td>{run.failed}</td></tr>)}</tbody></table></div>
       </section>
     </div>

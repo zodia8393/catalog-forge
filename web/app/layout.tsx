@@ -1,18 +1,28 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
+import NavLinks from "./nav-links";
 
 export const metadata: Metadata = {
-  title: "CatalogForge | 상품 데이터 수집 운영",
-  description: "장애 복구와 구조 변경 감지를 갖춘 상품 데이터 수집 운영 화면",
+  metadataBase: new URL("https://zodia8393.github.io"),
+  title: "CatalogForge | 복원력 있는 상품 데이터 수집",
+  description: "1,022건 실제 실행으로 증명한 웹 수집, 429 복구, 구조 변경 감지 파이프라인",
+  openGraph: {
+    title: "CatalogForge | 복원력 있는 상품 데이터 수집",
+    description: "실제 run UUID와 attempt 근거로 확인하는 상품 데이터 수집 파이프라인",
+    type: "website",
+    url: "https://zodia8393.github.io/catalog-forge/",
+  },
 };
 
-const nav = [
-  ["한눈에 보기", "/"],
-  ["수집 실행", "/runs/"],
-  ["상품 데이터", "/products/"],
-  ["샘플 데이터", "/samples/"],
-];
+export const viewport: Viewport = {
+  colorScheme: "dark",
+  themeColor: "#071018",
+};
+
+const sampleDataHref = process.env.GITHUB_PAGES === "true"
+  ? "/catalog-forge/sample-products.json"
+  : "/sample-products.json";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -24,9 +34,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <span className="brand-mark">CF</span>
               <span><strong>CatalogForge</strong><small>수집 운영 화면</small></span>
             </Link>
-            <nav aria-label="주요 메뉴">
-              {nav.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
-            </nav>
+            <NavLinks />
+            <div className="sidebar-resources" aria-label="프로젝트 링크">
+              <a href="https://github.com/zodia8393/catalog-forge" rel="noreferrer" target="_blank">GitHub 저장소 <span>↗</span></a>
+              <a download href={sampleDataHref}>실제 실행 JSON <span>↓</span></a>
+            </div>
             <div className="sidebar-foot">
               <span className="pulse" />
               실제 실행 snapshot

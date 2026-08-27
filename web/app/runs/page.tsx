@@ -1,9 +1,13 @@
+import Link from "next/link";
 import {
   displayConnector,
   displayStatus,
+  formatDuration,
+  formatKst,
   recordedAt,
   replayRuns,
   replayTimeline,
+  runTargetCount,
 } from "../data";
 
 export default function RunsPage() {
@@ -15,7 +19,7 @@ export default function RunsPage() {
           <h1>실패를 숨기지 않고 상태로 관리합니다</h1>
           <p>각 수집 대상이 대기, 처리, 재시도, 성공, 실패 중 어디에 있는지 기록합니다.</p>
         </div>
-        <span className="mode replay">실제 실행 snapshot</span>
+        <div className="top-actions"><span className="mode recorded">실제 실행 snapshot</span><Link className="action-link" href="/samples/">attempt 근거 보기 <span>→</span></Link></div>
       </header>
       <section className="demo-note" aria-label="표 읽는 방법">
         <strong>{recordedAt} KST 실제 실행 결과</strong>
@@ -24,8 +28,8 @@ export default function RunsPage() {
       <section className="panel">
         <div className="table-wrap">
           <table>
-            <thead><tr><th>실행 ID</th><th>수집처</th><th>상태</th><th>대기</th><th>처리 중</th><th>재시도 중</th><th>성공</th><th>실패</th><th>차단</th></tr></thead>
-            <tbody>{replayRuns.map(run => <tr key={run.id}><td className="mono">{run.id}</td><td>{displayConnector(run.connector)}</td><td><span className={"status " + run.status}>{displayStatus(run.status)}</span></td><td>{run.queued}</td><td>{run.running}</td><td>{run.retrying}</td><td>{run.succeeded}</td><td>{run.failed}</td><td>{run.blocked}</td></tr>)}</tbody>
+            <thead><tr><th>실행 ID</th><th>수집처</th><th>시작 (KST)</th><th>소요</th><th>상태</th><th>대상</th><th>성공</th><th>실패·차단</th></tr></thead>
+            <tbody>{replayRuns.map(run => <tr key={run.id}><td className="mono run-cell" title={run.id}>{run.id}</td><td>{displayConnector(run.connector)}</td><td>{formatKst(run.created_at)}</td><td>{formatDuration(run)}</td><td><span className={"status " + run.status}>{displayStatus(run.status)}</span></td><td>{runTargetCount(run).toLocaleString()}</td><td>{run.succeeded.toLocaleString()}</td><td>{run.failed + run.blocked}</td></tr>)}</tbody>
           </table>
         </div>
       </section>

@@ -3,7 +3,7 @@
 [![CI](https://github.com/zodia8393/catalog-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/zodia8393/catalog-forge/actions/workflows/ci.yml)
 [![Pages](https://github.com/zodia8393/catalog-forge/actions/workflows/pages.yml/badge.svg)](https://github.com/zodia8393/catalog-forge/actions/workflows/pages.yml)
 
-**[한국어 라이브 데모 보기](https://zodia8393.github.io/catalog-forge/)**
+**[한국어 라이브 데모](https://zodia8393.github.io/catalog-forge/)** · [실제 실행 JSON](https://zodia8393.github.io/catalog-forge/sample-products.json) · [시스템 설계](docs/system_design.md)
 
 여러 쇼핑몰의 상품 페이지를 동시에 수집하고, 서로 다른 문서 구조를 하나의 상품 형식으로 바꾸는 **웹 데이터 수집·운영 시스템**입니다. 일시적인 요청 실패, 작업자 중단, 사이트 구조 변경이 발생해도 데이터가 유실되거나 잘못 저장되지 않도록 설계했습니다.
 
@@ -24,6 +24,12 @@
 ~~~
 
 CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를 복구하고, 데이터 품질을 설명하며, 외부 변화에 안전하게 대응하는 수집 파이프라인**입니다.
+
+## 지원 검토자를 위한 90초 동선
+
+1. [한눈에 보기](https://zodia8393.github.io/catalog-forge/)에서 1,022건 성공, 429 복구, 유실·중복 결과를 확인합니다.
+2. [샘플 데이터](https://zodia8393.github.io/catalog-forge/samples/)에서 공개 수집·retry·schema drift의 실제 입력과 attempt 근거를 확인합니다.
+3. 아래 검증 표와 [재현 명령](#직접-검증)으로 같은 결과를 어떻게 다시 만드는지 확인합니다.
 
 ## 검증된 결과
 

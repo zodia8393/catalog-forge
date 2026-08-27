@@ -1,6 +1,8 @@
+import Link from "next/link";
 import {
   displayAvailability,
   displayConnector,
+  formatKst,
   recordedMetrics,
   replayProducts,
 } from "../data";
@@ -17,7 +19,7 @@ export default function ProductsPage() {
           <h1>상품 값마다 근거와 신뢰도를 남깁니다</h1>
           <p>추출한 값뿐 아니라 원본 수집처, 신뢰도, 문서 구조 지문을 함께 보존합니다.</p>
         </div>
-        <span className="mode replay">실제 저장 기록 {replayProducts.length}건</span>
+        <div className="top-actions"><span className="mode recorded">실제 저장 기록 {replayProducts.length}건</span><Link className="action-link" href="/samples/">추출 근거 보기 <span>→</span></Link></div>
       </header>
       <section className="demo-note" aria-label="검수 안내">
         <strong>실제 pipeline DB에서 선택한 product snapshot입니다.</strong>
@@ -39,7 +41,11 @@ export default function ProductsPage() {
             <h2>{product.title}</h2>
             <strong className="price">{product.currency} {product.price_amount}</strong>
             <p className="availability">재고 상태 · {displayAvailability(product.availability)}</p>
-            <footer><span>실제 product UUID</span><code>{product.id}</code><span className="fingerprint-label">문서 구조 지문</span><code>{product.dom_fingerprint}</code></footer>
+            <dl className="product-facts">
+              <div><dt>external_id</dt><dd title={product.external_id}>{product.external_id}</dd></div>
+              <div><dt>품질 판정</dt><dd className={product.review_required ? "needs-review" : "auto-stored"}>{product.review_required ? "사람 검수 대기" : "자동 저장 완료"}</dd></div>
+            </dl>
+            <footer><span>실제 product UUID</span><code>{product.id}</code><span className="fingerprint-label">문서 구조 지문 · {formatKst(product.captured_at)} KST</span><code>{product.dom_fingerprint}</code></footer>
           </article>
         ))}
       </section>

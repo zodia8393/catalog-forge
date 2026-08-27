@@ -5,6 +5,7 @@ export type Run = {
   connector: string;
   status: string;
   created_at: string;
+  updated_at: string;
   queued: number;
   running: number;
   retrying: number;
@@ -17,6 +18,9 @@ export type Product = {
   id: string;
   title: string;
   source: string;
+  external_id: string;
+  canonical_url: string;
+  captured_at: string;
   price_amount: string;
   currency: string;
   availability: string;
@@ -58,11 +62,23 @@ export function displayAvailability(availability: string) {
   return availabilityLabels[availability] ?? availability;
 }
 
-export const recordedAt = new Intl.DateTimeFormat("ko-KR", {
-  dateStyle: "medium",
-  timeStyle: "medium",
-  timeZone: "Asia/Seoul",
-}).format(new Date(recordedDataset.generated_at));
+export function formatKst(value: string) {
+  const kst = new Date(new Date(value).getTime() + 9 * 60 * 60 * 1000);
+  const pad = (part: number) => String(part).padStart(2, "0");
+  return `${kst.getUTCFullYear()}. ${kst.getUTCMonth() + 1}. ${kst.getUTCDate()}. ${pad(kst.getUTCHours())}:${pad(kst.getUTCMinutes())}:${pad(kst.getUTCSeconds())}`;
+}
+
+export function runTargetCount(run: Run) {
+  return run.queued + run.running + run.retrying + run.succeeded + run.failed + run.blocked;
+}
+
+export function formatDuration(run: Run) {
+  const seconds = Math.max(0, new Date(run.updated_at).getTime() - new Date(run.created_at).getTime()) / 1000;
+  if (seconds < .1) return "<0.1초";
+  return seconds < 60 ? `${seconds.toFixed(1)}초` : `${(seconds / 60).toFixed(1)}분`;
+}
+
+export const recordedAt = formatKst(recordedDataset.generated_at);
 export const recordedCommand = recordedDataset.generator_command;
 export const recordedMetrics = recordedDataset.metrics;
 export const recordedSources = recordedDataset.sources;

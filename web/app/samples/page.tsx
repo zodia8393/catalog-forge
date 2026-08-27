@@ -42,6 +42,7 @@ export default function SamplesPage() {
             aria-controls="sample-detail"
             aria-selected={item.id === sample.id}
             className={"sample-tab " + item.tone + (item.id === sample.id ? " active" : "")}
+            id={`sample-tab-${item.id}`}
             key={item.id}
             onClick={() => setSelectedId(item.id)}
             role="tab"
@@ -54,7 +55,7 @@ export default function SamplesPage() {
         ))}
       </div>
 
-      <section className="sample-detail" id="sample-detail" role="tabpanel">
+      <section aria-labelledby={`sample-tab-${sample.id}`} className="sample-detail" id="sample-detail" role="tabpanel">
         <div className="sample-detail-head">
           <div>
             <span className="eyebrow">{sample.kind}</span>
