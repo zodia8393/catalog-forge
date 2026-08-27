@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "catalog-forge"
+version = "0.1.0"
+description = "Resilient commerce web ingestion and catalog quality control plane."
+requires-python = ">=3.11"
+dependencies = [
+  "beautifulsoup4>=4.12",
+  "fastapi>=0.115",
+  "httpx>=0.27",
+  "pydantic>=2.10",
+  "pydantic-settings>=2.6",
+  "redis>=5.2",
+  "sqlalchemy>=2.0",
+  "psycopg[binary]>=3.2",
+  "uvicorn[standard]>=0.34",
+]
+
+[project.optional-dependencies]
+browser = ["playwright>=1.50"]
+dev = ["pytest>=8.3", "pytest-asyncio>=0.25"]
+
+[project.scripts]
+catalog-forge-api = "catalog_forge.api:main"
+catalog-forge-worker = "catalog_forge.worker:main"
+catalog-forge-fixture = "catalog_forge.fixture_app:main"
+catalog-forge-benchmark = "catalog_forge.benchmark:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

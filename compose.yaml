@@ -1,0 +1,90 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: catalog
+      POSTGRES_USER: catalog
+      POSTGRES_PASSWORD: catalog
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catalog -d catalog"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - redis-data:/data
+
+  fixture:
+    build: .
+    image: catalog-forge:local
+    restart: unless-stopped
+    command: ["catalog-forge-fixture"]
+    ports:
+      - "127.0.0.1:8101:8101"
+
+  api:
+    build: .
+    image: catalog-forge:local
+    restart: unless-stopped
+    command: ["catalog-forge-api"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment: &catalog-environment
+      CATALOG_FORGE_DATABASE_URL: postgresql+psycopg://catalog:catalog@postgres:5432/catalog
+      CATALOG_FORGE_REDIS_URL: redis://redis:6379/0
+      CATALOG_FORGE_API_KEY: ${CATALOG_FORGE_API_KEY:-local-demo-key}
+      CATALOG_FORGE_ALLOWED_HOSTS: books.toscrape.com,fixture
+      CATALOG_FORGE_PRIVATE_HOST_ALLOWLIST: fixture
+      CATALOG_FORGE_MAX_CONCURRENCY_PER_HOST: 8
+      CATALOG_FORGE_MIN_HOST_INTERVAL_MS: 100
+    ports:
+      - "127.0.0.1:8100:8100"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/health/ready', timeout=3).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  worker:
+    image: catalog-forge:local
+    restart: unless-stopped
+    command: ["catalog-forge-worker"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      fixture:
+        condition: service_started
+    environment:
+      <<: *catalog-environment
+      CATALOG_FORGE_WORKER_NAME: worker-compose-1
+
+  web:
+    build:
+      context: web
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8100
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:80"
+
+volumes:
+  postgres-data:
+  redis-data:
