@@ -22,6 +22,38 @@ export type Product = {
   dom_fingerprint: string;
 };
 
+const connectorLabels: Record<string, string> = {
+  fixture_chaos: "장애 복구 테스트",
+  books_to_scrape: "Books to Scrape",
+  fixture_drift: "구조 변경 테스트",
+};
+
+const statusLabels: Record<string, string> = {
+  queued: "대기",
+  running: "처리 중",
+  retrying: "재시도",
+  succeeded: "완료",
+  failed: "실패",
+  blocked: "차단",
+};
+
+const availabilityLabels: Record<string, string> = {
+  InStock: "재고 있음",
+  "In stock (3 available)": "재고 있음 (3개)",
+};
+
+export function displayConnector(connector: string) {
+  return connectorLabels[connector] ?? connector;
+}
+
+export function displayStatus(status: string) {
+  return statusLabels[status] ?? status;
+}
+
+export function displayAvailability(availability: string) {
+  return availabilityLabels[availability] ?? availability;
+}
+
 export const replayRuns: Run[] = [
   {
     id: "run-chaos-1000",
@@ -105,9 +137,9 @@ export const replayProducts: Product[] = [
 ];
 
 export const replayTimeline = [
-  { time: "09:30:00", event: "Run accepted", detail: "1,000 targets written with idempotency keys" },
-  { time: "09:30:02", event: "Rate limit observed", detail: "83 responses returned 429 · Retry-After honored" },
-  { time: "09:30:07", event: "Worker reclaimed", detail: "17 stale messages recovered after simulated crash" },
-  { time: "09:30:13", event: "Schema drift", detail: "DOM fingerprint changed · 1 record sent to review" },
-  { time: "09:30:21", event: "Run complete", detail: "1,000 terminal targets · 0 lost · 0 duplicate" },
+  { time: "09:30:00", event: "수집 실행 접수", detail: "대상 1,000개를 중복 방지 키와 함께 저장" },
+  { time: "09:30:02", event: "요청 제한 감지", detail: "429 응답 83건을 확인하고 Retry-After에 맞춰 재시도" },
+  { time: "09:30:07", event: "중단 작업 회수", detail: "작업자 중단을 가정해 멈춘 메시지 17건을 다른 작업자가 처리" },
+  { time: "09:30:13", event: "문서 구조 변경 감지", detail: "DOM fingerprint가 바뀐 상품 1건을 사람 검수로 분리" },
+  { time: "09:30:21", event: "수집 실행 완료", detail: "1,000건 처리 완료 · 유실 0 · 중복 0" },
 ];

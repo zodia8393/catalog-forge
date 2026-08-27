@@ -3,14 +3,14 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CatalogForge Control Plane",
-  description: "Resilient commerce web ingestion and catalog quality dashboard",
+  title: "CatalogForge | 상품 데이터 수집 운영",
+  description: "장애 복구와 구조 변경 감지를 갖춘 상품 데이터 수집 운영 화면",
 };
 
 const nav = [
-  ["Overview", "/"],
-  ["Crawl runs", "/runs/"],
-  ["Catalog", "/products/"],
+  ["한눈에 보기", "/"],
+  ["수집 실행", "/runs/"],
+  ["상품 데이터", "/products/"],
 ];
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -21,15 +21,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <aside className="sidebar">
             <Link className="brand" href="/">
               <span className="brand-mark">CF</span>
-              <span><strong>CatalogForge</strong><small>Control plane</small></span>
+              <span><strong>CatalogForge</strong><small>수집 운영 화면</small></span>
             </Link>
-            <nav>
+            <nav aria-label="주요 메뉴">
               {nav.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
             </nav>
             <div className="sidebar-foot">
               <span className="pulse" />
-              Replay evidence
-              <small>Deterministic fixture run</small>
+              검증 결과 재생
+              <small>같은 조건으로 재현한 실행 기록</small>
             </div>
           </aside>
           <main>{children}</main>
