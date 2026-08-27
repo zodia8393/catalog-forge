@@ -1,0 +1,11 @@
+{
+  "run_id": "4b7774e3-369d-466c-bf37-a690af4c94aa",
+  "listing_pages": 1,
+  "discovered_product_urls": 20,
+  "succeeded": 20,
+  "failed": 0,
+  "blocked": 0,
+  "fetch_attempts": 20,
+  "product_snapshots": 20,
+  "success_rate": 1.0
+}

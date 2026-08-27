@@ -1,0 +1,23 @@
+{
+  "baseline": {
+    "pages": 1000,
+    "concurrency": 1,
+    "fixture_delay_ms": 10,
+    "elapsed_seconds": 10.5211,
+    "throughput_pages_per_second": 95.05,
+    "p50_latency_ms": 10.425,
+    "p95_latency_ms": 10.731,
+    "failures": 0
+  },
+  "concurrent": {
+    "pages": 1000,
+    "concurrency": 32,
+    "fixture_delay_ms": 10,
+    "elapsed_seconds": 0.3659,
+    "throughput_pages_per_second": 2733.32,
+    "p50_latency_ms": 11.007,
+    "p95_latency_ms": 11.693,
+    "failures": 0
+  },
+  "throughput_speedup": 28.76
+}

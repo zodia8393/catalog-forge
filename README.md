@@ -7,18 +7,18 @@
 
 **구조 변경과 장애에 견디는 commerce web ingestion control plane**입니다. URL을 많이 요청하는 scraper가 아니라 수집 실패, worker crash, schema drift가 생겨도 상품 catalog를 조용히 오염시키지 않는 운영 제품을 만들었습니다.
 
-> **Working-tree evidence · 2026-08-27 KST** — 1,000 targets 중 83 transient failures와 17 stale messages를 전부 복구 · succeeded 1,000 · lost/duplicate 0 · labeled required fields 400/400 · Books to Scrape 20/20
+> **Verified evidence · 2026-08-27 KST** — 1,000 targets 중 83 transient failures와 17 stale messages를 전부 복구 · succeeded 1,000 · lost/duplicate 0 · labeled required fields 400/400 · Books to Scrape 20/20
 
 ## 핵심 결과
 
 | Metric | Result | Evidence |
 |---|---:|---|
-| Failure-recovery rehearsal | 1,000 / 1,000 succeeded | 1,083 fetch attempts, transient recovery 83/83 |
-| Worker crash recovery | 17 / 17 reclaimed | pending-message reclaim rehearsal |
-| Data integrity | lost 0 · duplicate 0 | `target_id` idempotency contract |
-| Parser accuracy | 400 / 400 fields | 100 labeled fixture products × 4 required fields |
-| Public connector | 20 / 20 succeeded | Books to Scrape, listing discovery 1 page |
-| Async throughput | 28.76× baseline | 1,000 pages, controlled 10ms fixture latency |
+| Failure-recovery rehearsal | 1,000 / 1,000 succeeded | [1,083 attempts · recovery 83/83](docs/evidence/recovery_rehearsal.json) |
+| Worker crash recovery | 17 / 17 reclaimed | [pending-message reclaim rehearsal](docs/evidence/recovery_rehearsal.json) |
+| Data integrity | lost 0 · duplicate 0 | [`target_id` idempotency evidence](docs/evidence/recovery_rehearsal.json) |
+| Parser accuracy | 400 / 400 fields | [100 labeled products × 4 fields](tests/test_parser.py) |
+| Public connector | 20 / 20 succeeded | [Books to Scrape · listing discovery 1 page](docs/evidence/books_to_scrape_demo.json) |
+| Async throughput | 28.76× baseline | [1,000 pages · controlled 10ms fixture](docs/evidence/benchmark.json) |
 | Automated regression | 20 tests | config, parser, drift, API, SSRF, redirect guard, retry, recovery |
 | Frontend security | 0 vulnerabilities | `npm audit` after Next.js 16.3.3 update |
 

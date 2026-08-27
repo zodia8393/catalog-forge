@@ -1,0 +1,15 @@
+{
+  "run_id": "37a0db19-9f4c-452c-bb0c-5494805852d7",
+  "targets": 1000,
+  "injected_transient_failures": 83,
+  "stale_messages_reclaimed": 17,
+  "transient_failures_recovered": 83,
+  "succeeded": 1000,
+  "failed": 0,
+  "blocked": 0,
+  "fetch_attempts": 1083,
+  "product_snapshots": 1000,
+  "lost_snapshots": 0,
+  "duplicate_snapshots": 0,
+  "elapsed_seconds": 2.047
+}
