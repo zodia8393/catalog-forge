@@ -51,7 +51,7 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
 
 ## 라이브 데모에서 볼 수 있는 것
 
-- **[실시간 체험](https://zodia8393.github.io/catalog-forge/playground/):** HTML 직접 입력 → 실시간 Product JSON·coverage·confidence·field evidence
+- **[실시간 체험](https://zodia8393.github.io/catalog-forge/playground/):** 문서 입력 → 필드 추출 → 품질 검사 → 결과 분기를 한 화면에서 확인
 - **한눈에 보기:** 실제 run 3개의 성공률, 복구한 429, 유실·중복, 선택한 상품의 필수 필드
 - **수집 실행:** 실제 UUID와 생성 시각, 상태별 건수, 장애 복구 순서
 - **상품 데이터:** DB에 저장된 실제 product UUID, 값, 신뢰도, 문서 구조 지문, 검수 여부
