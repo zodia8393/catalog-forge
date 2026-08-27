@@ -15,11 +15,20 @@ from .reliability import CircuitRegistry
 
 
 class FetchError(RuntimeError):
-    def __init__(self, code: str, message: str, *, transient: bool, retry_after: float | None = None):
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        *,
+        transient: bool,
+        retry_after: float | None = None,
+        status_code: int | None = None,
+    ):
         super().__init__(message)
         self.code = code
         self.transient = transient
         self.retry_after = retry_after
+        self.status_code = status_code
 
 
 @dataclass(slots=True)
@@ -175,12 +184,14 @@ class HttpFetcher:
                             f"upstream returned {response.status_code}",
                             transient=True,
                             retry_after=retry_after,
+                            status_code=response.status_code,
                         )
                     if response.status_code >= 400:
                         raise FetchError(
                             f"http_{response.status_code}",
                             f"upstream returned {response.status_code}",
                             transient=False,
+                            status_code=response.status_code,
                         )
                     breaker.record_success()
                     encoding = response.encoding or "utf-8"

@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import sampleDataset from "../../public/sample-products.json";
+import { recordedAt, recordedCommand } from "../data";
+
+const environmentLabels: Record<string, string> = {
+  external_network: "외부 공개 sandbox",
+  local_asgi_fault_injection: "로컬 ASGI 장애 주입",
+  local_asgi_drift_injection: "로컬 ASGI 구조 변경 주입",
+};
 
 export default function SamplesPage() {
   const [selectedId, setSelectedId] = useState(sampleDataset.cases[0].id);
@@ -13,14 +20,20 @@ export default function SamplesPage() {
         <div>
           <span className="eyebrow">샘플 데이터 / 입력부터 결과까지</span>
           <h1>상품 페이지가 어떤 데이터로 바뀌는지 확인하세요</h1>
-          <p>정상 수집, 요청 실패 복구, 사이트 구조 변경까지 세 가지 대표 흐름을 실제 값으로 연결했습니다.</p>
+          <p>외부 수집, 429 복구, 구조 변경 감지를 실제로 실행한 입력·DB 기록·결과를 연결했습니다.</p>
         </div>
-        <a className="download-link" href="../sample-products.json" download>샘플 JSON 내려받기</a>
+        <a className="download-link" href="../sample-products.json" download>실제 실행 JSON 내려받기</a>
       </header>
 
       <section className="demo-note" aria-label="샘플 데이터 안내">
-        <strong>공개 sandbox 1건과 프로젝트가 만든 합성 장애 표본 2건입니다.</strong>
-        <span>각 탭에서 원본 입력, 처리 단계, 최종 JSON, 필드별 추출 근거를 확인할 수 있습니다.</span>
+        <strong>세 탭 모두 실제 pipeline 실행 기록입니다.</strong>
+        <span>{recordedAt} KST 생성 · 외부 sandbox 1회 + 로컬 장애·구조 변경 주입 2회</span>
+      </section>
+
+      <section className="provenance" aria-label="데이터 생성 방법">
+        <span className="actual-badge"><i /> ACTUAL RUN</span>
+        <div><strong>재생용 예시를 손으로 입력하지 않았습니다.</strong><small>아래 명령이 run UUID, attempt, product, review와 응답 hash를 수집해 이 화면의 JSON을 생성했습니다.</small></div>
+        <code>{recordedCommand}</code>
       </section>
 
       <div className="sample-tabs" role="tablist" aria-label="샘플 유형">
@@ -54,6 +67,14 @@ export default function SamplesPage() {
             <small>{sample.decision.reason}</small>
           </div>
         </div>
+
+        <section className="execution-proof" aria-label="실행 증거">
+          <div><span>실행 여부</span><strong><i /> 실제 실행 완료</strong></div>
+          <div><span>실행 환경</span><strong>{environmentLabels[sample.execution.environment] ?? sample.execution.environment}</strong></div>
+          <div><span>run UUID</span><code title={sample.execution.run_id}>{sample.execution.run_id}</code></div>
+          <div><span>pipeline HTTP 상태</span><strong>{sample.execution.request_statuses.join(" → ")}</strong></div>
+          <div><span>응답 SHA-256</span><code title={sample.execution.response_sha256}>{sample.execution.response_sha256}</code></div>
+        </section>
 
         <section className="sample-flow" aria-label="처리 단계">
           {sample.steps.map((step, index) => (

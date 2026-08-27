@@ -29,8 +29,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </nav>
             <div className="sidebar-foot">
               <span className="pulse" />
-              검증 결과 재생
-              <small>같은 조건으로 재현한 실행 기록</small>
+              실제 실행 snapshot
+              <small>generator가 저장한 실행 기록</small>
             </div>
           </aside>
           <main>{children}</main>

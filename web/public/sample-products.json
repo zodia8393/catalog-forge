@@ -1,45 +1,442 @@
 {
-  "dataset": "CatalogForge sample pipeline",
-  "version": "1.0",
-  "recorded_at": "2026-08-27T13:02:20+09:00",
+  "dataset": "CatalogForge 실제 실행 snapshot",
+  "version": "2.0",
+  "generated_at": "2026-08-27T04:29:30.958468+00:00",
+  "generator_command": "PYTHONPATH=src python3 -m catalog_forge.recorded_demo --public-products 20 --recovery-targets 1000 --output web/public/sample-products.json",
+  "execution_mode": "recorded_actual_runs",
+  "notice": "외부 sandbox 수집 1회와 로컬 장애·구조 변경 주입 run을 실제 실행해 생성한 읽기 전용 기록입니다.",
+  "metrics": {
+    "targets": 1022,
+    "succeeded": 1022,
+    "success_rate": 1.0,
+    "fetch_attempts": 1105,
+    "transient_failures": 83,
+    "transient_failures_recovered": 83,
+    "stale_messages_reclaimed": 17,
+    "lost_snapshots": 0,
+    "duplicate_snapshots": 0,
+    "reviews_pending": 1,
+    "required_fields_present": 16,
+    "required_fields_expected": 16
+  },
+  "sources": [
+    {
+      "source": "fixture_chaos",
+      "label": "장애 복구 테스트",
+      "description": "실제 ASGI 요청에 429와 작업자 중단을 주입",
+      "run_id": "ca01ebf6-375a-4adf-94be-97d6f9ef7ca8",
+      "targets": 1000,
+      "succeeded": 1000,
+      "reviews_pending": 0
+    },
+    {
+      "source": "books_to_scrape",
+      "label": "Books to Scrape",
+      "description": "robots.txt를 준수한 공개 sandbox 실제 HTTP 수집",
+      "run_id": "f61b869f-75de-4824-a1af-4b201443000a",
+      "targets": 20,
+      "succeeded": 20,
+      "reviews_pending": 0
+    },
+    {
+      "source": "fixture_drift",
+      "label": "구조 변경 테스트",
+      "description": "baseline 다음에 변경 HTML을 실제 처리",
+      "run_id": "f32b001f-3ecf-415b-8e89-0671239a8775",
+      "targets": 2,
+      "succeeded": 2,
+      "reviews_pending": 1
+    }
+  ],
+  "runs": [
+    {
+      "id": "ca01ebf6-375a-4adf-94be-97d6f9ef7ca8",
+      "connector": "fixture_chaos",
+      "status": "succeeded",
+      "created_at": "2026-08-27T04:29:24.184699Z",
+      "updated_at": "2026-08-27T04:29:26.492887Z",
+      "queued": 0,
+      "running": 0,
+      "retrying": 0,
+      "succeeded": 1000,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "f61b869f-75de-4824-a1af-4b201443000a",
+      "connector": "books_to_scrape",
+      "status": "succeeded",
+      "created_at": "2026-08-27T04:29:27.620850Z",
+      "updated_at": "2026-08-27T04:29:30.725044Z",
+      "queued": 0,
+      "running": 0,
+      "retrying": 0,
+      "succeeded": 20,
+      "failed": 0,
+      "blocked": 0
+    },
+    {
+      "id": "f32b001f-3ecf-415b-8e89-0671239a8775",
+      "connector": "fixture_drift",
+      "status": "succeeded",
+      "created_at": "2026-08-27T04:29:30.946702Z",
+      "updated_at": "2026-08-27T04:29:30.956287Z",
+      "queued": 0,
+      "running": 0,
+      "retrying": 0,
+      "succeeded": 2,
+      "failed": 0,
+      "blocked": 0
+    }
+  ],
+  "products": [
+    {
+      "id": "c6b686a3-494b-43fe-88d6-3b6be4abfd40",
+      "run_id": "ca01ebf6-375a-4adf-94be-97d6f9ef7ca8",
+      "target_id": "2066e875-ee9a-40fd-a1cb-904996c1d6fe",
+      "source": "fixture_chaos",
+      "external_id": "SKU-42",
+      "canonical_url": "http://fixture/products/42",
+      "title": "Reliable Product 42",
+      "price_amount": "52.90",
+      "currency": "USD",
+      "availability": "InStock",
+      "brand": "Forge Labs",
+      "category": "Fixture",
+      "image_url": "http://fixture/images/42.jpg",
+      "captured_at": "2026-08-27T04:29:24.508338+00:00",
+      "confidence": 0.985,
+      "dom_fingerprint": "3fa5dc9e52eb63dd",
+      "field_evidence": {
+        "title": {
+          "value": "Reliable Product 42",
+          "source": "json_ld",
+          "confidence": 0.99,
+          "selector": "$.name"
+        },
+        "brand": {
+          "value": "Forge Labs",
+          "source": "json_ld",
+          "confidence": 0.98,
+          "selector": "$.brand"
+        },
+        "category": {
+          "value": "Fixture",
+          "source": "json_ld",
+          "confidence": 0.98,
+          "selector": "$.category"
+        },
+        "image_url": {
+          "value": "/images/42.jpg",
+          "source": "json_ld",
+          "confidence": 0.98,
+          "selector": "$.image"
+        },
+        "external_id": {
+          "value": "SKU-42",
+          "source": "json_ld",
+          "confidence": 0.99,
+          "selector": "$.sku"
+        },
+        "availability": {
+          "value": "InStock",
+          "source": "json_ld",
+          "confidence": 0.98,
+          "selector": "$.offers.availability"
+        },
+        "price_amount": {
+          "value": "52.90",
+          "source": "json_ld",
+          "confidence": 0.99,
+          "selector": "$.offers.price"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "json_ld",
+          "confidence": 0.99,
+          "selector": "$.offers.priceCurrency"
+        }
+      },
+      "required_field_coverage": 1.0,
+      "fetch_attempts": 1,
+      "review_required": false
+    },
+    {
+      "id": "0e2e8de2-7779-483f-9915-1e0bb311ded0",
+      "run_id": "f61b869f-75de-4824-a1af-4b201443000a",
+      "target_id": "43d9f0bc-2378-4240-80b5-cb7e0102a100",
+      "source": "books_to_scrape",
+      "external_id": "a897fe39b1053632",
+      "canonical_url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+      "title": "A Light in the Attic",
+      "price_amount": "51.77",
+      "currency": "GBP",
+      "availability": "In stock (22 available)",
+      "brand": null,
+      "category": "Books",
+      "image_url": "https://books.toscrape.com/media/cache/fe/72/fe72f0532301ec28892ae79a629a293c.jpg",
+      "captured_at": "2026-08-27T04:29:29.214944+00:00",
+      "confidence": 0.97,
+      "dom_fingerprint": "69b715b335c5081b",
+      "field_evidence": {
+        "title": {
+          "value": "A Light in the Attic",
+          "source": "source_selector",
+          "confidence": 0.97,
+          "selector": ".product_main h1"
+        },
+        "external_id": {
+          "value": "a897fe39b1053632",
+          "source": "source_selector",
+          "confidence": 0.99,
+          "selector": "table:UPC"
+        },
+        "category": {
+          "value": "Books",
+          "source": "source_selector",
+          "confidence": 0.96,
+          "selector": "table:Product Type"
+        },
+        "availability": {
+          "value": "In stock (22 available)",
+          "source": "source_selector",
+          "confidence": 0.96,
+          "selector": "table:Availability"
+        },
+        "price_amount": {
+          "value": "51.77",
+          "source": "source_selector",
+          "confidence": 0.98,
+          "selector": "table:Price (incl. tax)"
+        },
+        "currency": {
+          "value": "GBP",
+          "source": "source_selector",
+          "confidence": 0.98,
+          "selector": "table:Price (incl. tax)"
+        },
+        "image_url": {
+          "value": "../../media/cache/fe/72/fe72f0532301ec28892ae79a629a293c.jpg",
+          "source": "source_selector",
+          "confidence": 0.95,
+          "selector": ".item.active img"
+        }
+      },
+      "required_field_coverage": 1.0,
+      "fetch_attempts": 1,
+      "review_required": false
+    },
+    {
+      "id": "10627c98-4400-4e4d-acd0-9cf3813f8b41",
+      "run_id": "f32b001f-3ecf-415b-8e89-0671239a8775",
+      "target_id": "350c2d3f-30c5-49cf-8569-463b01e15a50",
+      "source": "fixture_drift",
+      "external_id": "http://fixture/products/91?variant=drift",
+      "canonical_url": "http://fixture/products/91",
+      "title": "Reliable Product 91",
+      "price_amount": "21.90",
+      "currency": "USD",
+      "availability": "InStock",
+      "brand": null,
+      "category": null,
+      "image_url": "http://fixture/products/91?variant=drift",
+      "captured_at": "2026-08-27T04:29:30.954675+00:00",
+      "confidence": 0.832,
+      "dom_fingerprint": "18fdf70e66a429aa",
+      "field_evidence": {
+        "title": {
+          "value": "Reliable Product 91",
+          "source": "semantic_fallback",
+          "confidence": 0.86,
+          "selector": "og:title|h1"
+        },
+        "price_amount": {
+          "value": "21.90",
+          "source": "semantic_fallback",
+          "confidence": 0.84,
+          "selector": "itemprop=price"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "semantic_fallback",
+          "confidence": 0.84,
+          "selector": "itemprop=priceCurrency"
+        },
+        "availability": {
+          "value": "InStock",
+          "source": "semantic_fallback",
+          "confidence": 0.82,
+          "selector": "itemprop=availability"
+        },
+        "external_id": {
+          "value": "http://fixture/products/91?variant=drift",
+          "source": "derived",
+          "confidence": 0.8,
+          "selector": "canonical_url"
+        }
+      },
+      "required_field_coverage": 1.0,
+      "fetch_attempts": 1,
+      "review_required": true,
+      "review_id": "130319a3-c1ab-4248-a653-66af846a70cb",
+      "review_reason": "schema_drift",
+      "review_status": "pending"
+    },
+    {
+      "id": "b3d0b970-750b-4853-9a92-104fd0eb18f1",
+      "run_id": "ca01ebf6-375a-4adf-94be-97d6f9ef7ca8",
+      "target_id": "01f6afce-eafe-4f63-9f0d-4b8058dcf5e0",
+      "source": "fixture_chaos",
+      "external_id": "SKU-120",
+      "canonical_url": "http://fixture/products/120",
+      "title": "Recovered Product 120",
+      "price_amount": "19.90",
+      "currency": "USD",
+      "availability": "InStock",
+      "brand": "Forge Labs",
+      "category": "Fixture",
+      "image_url": "http://fixture/images/120.jpg",
+      "captured_at": "2026-08-27T04:29:26.347829+00:00",
+      "confidence": 0.985,
+      "dom_fingerprint": "3fa5dc9e52eb63dd",
+      "field_evidence": {
+        "title": {
+          "value": "Recovered Product 120",
+          "source": "json_ld",
+          "confidence": 0.99,
+          "selector": "$.name"
+        },
+        "brand": {
+          "value": "Forge Labs",
+          "source": "json_ld",
+          "confidence": 0.98,
+          "selector": "$.brand"
+        },
+        "category": {
+          "value": "Fixture",
+          "source": "json_ld",
+          "confidence": 0.98,
+          "selector": "$.category"
+        },
+        "image_url": {
+          "value": "/images/120.jpg",
+          "source": "json_ld",
+          "confidence": 0.98,
+          "selector": "$.image"
+        },
+        "external_id": {
+          "value": "SKU-120",
+          "source": "json_ld",
+          "confidence": 0.99,
+          "selector": "$.sku"
+        },
+        "availability": {
+          "value": "InStock",
+          "source": "json_ld",
+          "confidence": 0.98,
+          "selector": "$.offers.availability"
+        },
+        "price_amount": {
+          "value": "19.90",
+          "source": "json_ld",
+          "confidence": 0.99,
+          "selector": "$.offers.price"
+        },
+        "currency": {
+          "value": "USD",
+          "source": "json_ld",
+          "confidence": 0.99,
+          "selector": "$.offers.priceCurrency"
+        }
+      },
+      "required_field_coverage": 1.0,
+      "fetch_attempts": 2,
+      "review_required": false
+    }
+  ],
+  "timeline": [
+    {
+      "time": "1단계",
+      "event": "장애 복구 run 생성",
+      "detail": "실제 run ca01ebf6-375a-4adf-94be-97d6f9ef7ca8 · 대상 1000개"
+    },
+    {
+      "time": "2단계",
+      "event": "429 응답과 재시도",
+      "detail": "실제 429 83건을 모두 복구"
+    },
+    {
+      "time": "3단계",
+      "event": "중단 메시지 회수",
+      "detail": "pending message 17건을 다른 worker로 회수"
+    },
+    {
+      "time": "4단계",
+      "event": "공개 sandbox 수집",
+      "detail": "실제 run f61b869f-75de-4824-a1af-4b201443000a · 20건 저장"
+    },
+    {
+      "time": "5단계",
+      "event": "구조 변경 검수 분리",
+      "detail": "실제 review 130319a3-c1ab-4248-a653-66af846a70cb · 유실 0 · 중복 0"
+    }
+  ],
   "cases": [
     {
       "id": "public-selector",
-      "label": "공개 사이트 수집",
-      "short_description": "실제 HTML을 사이트별 selector로 구조화",
-      "description": "스크래핑 연습용 공개 사이트의 목록에서 상품 URL을 찾고, 상품 HTML을 공통 상품 형식으로 변환한 표본입니다.",
-      "kind": "공개 sandbox",
+      "label": "공개 사이트 실제 수집",
+      "short_description": "공개 HTML을 요청하고 site selector로 구조화",
+      "description": "Books to Scrape에 실제 HTTP 요청을 보내 발견한 상품 20개 중 첫 상품의 수집·파싱·저장 기록입니다.",
+      "kind": "외부 네트워크 실제 실행",
       "tone": "good",
+      "execution": {
+        "actual_run": true,
+        "run_id": "f61b869f-75de-4824-a1af-4b201443000a",
+        "run_created_at": "2026-08-27T04:29:27.620850+00:00",
+        "environment": "external_network",
+        "request_statuses": [
+          200
+        ],
+        "attempt_ids": [
+          "e71771a8-50b8-457c-8c9b-64d142eafa43"
+        ],
+        "response_status": 200,
+        "response_bytes": 9279,
+        "response_sha256": "a6e572bec156bf80ff3149b89b6d218cdcf8866ccc26ccf69a5431db8e142c6a"
+      },
       "input": {
-        "source_label": "Books to Scrape",
+        "source_label": "Books to Scrape · 실제 응답 일부",
         "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
-        "format": "HTML 핵심 일부",
-        "raw": "<div class=\"product_main\">\n  <h1>A Light in the Attic</h1>\n  <p class=\"price_color\">£51.77</p>\n  <p class=\"instock availability\">In stock (22 available)</p>\n</div>\n<tr><th>UPC</th><td>a897fe39b1053632</td></tr>\n<tr><th>Product Type</th><td>Books</td></tr>\n<tr><th>Price (incl. tax)</th><td>£51.77</td></tr>"
+        "format": "HTTP 200 HTML excerpt",
+        "raw": "<div class=\"col-sm-6 product_main\">\n<h1>A Light in the Attic</h1>\n<p class=\"price_color\">£51.77</p>\n<p class=\"instock availability\">\n<i class=\"icon-ok\"></i>\n    \n        In stock (22 available)\n    \n</p>\n<p class=\"star-rating Three\">\n<i class=\"icon-star\"></i>\n<i class=\"icon-star\"></i>\n<i class=\"icon-star\"></i>\n<i class=\"icon-star\"></i>\n<i class=\"icon-star\"></i>\n<!-- <small><a href=\"/catalogue/a-light-in-the-attic_1000/reviews/\">\n        \n                \n                    0 customer reviews\n                \n        </a></small>\n         --> \n\n\n<!-- \n    <a id=\"write_review\" href=\"/catalogue/a-light-in-the-attic_1000/reviews/add/#addreview\" class=\"btn btn-success btn-sm\">\n        Write a review\n    </a>\n\n --></p>\n<hr/>\n<div class=\"alert alert-warning\" role=\"alert\"><strong>Warning!</strong> This is a demo website for web scraping purposes. Prices and ratings here were randomly assigned and have no real meaning.</div>\n</div>\n<tr>\n<th>UPC</th><td>a897fe39b1053632</td>\n</tr>\n<tr>\n<th>Product Type</th><td>Books</td>\n</tr>\n<tr>\n<th>Price (incl. tax)</th><td>£51.77</td>\n</tr>\n<tr>\n<th>Availability</th>\n<td>In stock (22 available)</td>\n</tr>"
       },
       "steps": [
         {
-          "title": "목록 발견",
+          "title": "목록 실제 요청",
           "detail": "목록 1페이지에서 상품 URL 20개 발견"
         },
         {
-          "title": "HTML 요청",
-          "detail": "상품 페이지 HTTP 200 응답 확인"
+          "title": "상품 실제 요청",
+          "detail": "pipeline attempt가 HTTP 200으로 완료"
         },
         {
           "title": "필드 추출",
-          "detail": "사이트별 selector로 제목·가격·통화·재고 추출"
+          "detail": "사이트 selector로 제목·가격·통화·재고를 구조화"
         },
         {
-          "title": "품질 통과",
-          "detail": "필수 필드 4/4, 신뢰도 97.0%"
+          "title": "멱등 저장",
+          "detail": "실제 product ID 0e2e8de2-7779-483f-9915-1e0bb311ded0로 snapshot 저장"
         }
       ],
       "decision": {
         "status": "stored",
-        "label": "자동 저장",
-        "reason": "필수 필드가 모두 있고 신뢰도가 90% 이상입니다."
+        "label": "실제 저장 완료",
+        "reason": "필수 필드 4개가 모두 있고 신뢰도 기준을 통과했습니다."
       },
       "output": {
+        "id": "0e2e8de2-7779-483f-9915-1e0bb311ded0",
+        "run_id": "f61b869f-75de-4824-a1af-4b201443000a",
+        "target_id": "43d9f0bc-2378-4240-80b5-cb7e0102a100",
         "source": "books_to_scrape",
         "external_id": "a897fe39b1053632",
         "canonical_url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
@@ -47,10 +444,58 @@
         "price_amount": "51.77",
         "currency": "GBP",
         "availability": "In stock (22 available)",
+        "brand": null,
         "category": "Books",
+        "image_url": "https://books.toscrape.com/media/cache/fe/72/fe72f0532301ec28892ae79a629a293c.jpg",
+        "captured_at": "2026-08-27T04:29:29.214944+00:00",
         "confidence": 0.97,
-        "required_field_coverage": 1.0,
         "dom_fingerprint": "69b715b335c5081b",
+        "field_evidence": {
+          "title": {
+            "value": "A Light in the Attic",
+            "source": "source_selector",
+            "confidence": 0.97,
+            "selector": ".product_main h1"
+          },
+          "external_id": {
+            "value": "a897fe39b1053632",
+            "source": "source_selector",
+            "confidence": 0.99,
+            "selector": "table:UPC"
+          },
+          "category": {
+            "value": "Books",
+            "source": "source_selector",
+            "confidence": 0.96,
+            "selector": "table:Product Type"
+          },
+          "availability": {
+            "value": "In stock (22 available)",
+            "source": "source_selector",
+            "confidence": 0.96,
+            "selector": "table:Availability"
+          },
+          "price_amount": {
+            "value": "51.77",
+            "source": "source_selector",
+            "confidence": 0.98,
+            "selector": "table:Price (incl. tax)"
+          },
+          "currency": {
+            "value": "GBP",
+            "source": "source_selector",
+            "confidence": 0.98,
+            "selector": "table:Price (incl. tax)"
+          },
+          "image_url": {
+            "value": "../../media/cache/fe/72/fe72f0532301ec28892ae79a629a293c.jpg",
+            "source": "source_selector",
+            "confidence": 0.95,
+            "selector": ".item.active img"
+          }
+        },
+        "required_field_coverage": 1.0,
+        "fetch_attempts": 1,
         "review_required": false
       },
       "evidence": [
@@ -86,60 +531,132 @@
     },
     {
       "id": "retry-recovery",
-      "label": "429 오류 복구",
-      "short_description": "실패한 요청을 재시도해 중복 없이 저장",
-      "description": "첫 요청에서 429가 발생한 뒤 Retry-After와 backoff를 적용해 다시 요청하고, 성공 결과를 한 번만 저장한 합성 장애 표본입니다.",
-      "kind": "합성 장애 fixture",
+      "label": "429 오류 실제 복구",
+      "short_description": "429를 받은 실제 attempt를 재시도해 한 번만 저장",
+      "description": "로컬 ASGI fixture가 첫 요청에 429를 반환하고 두 번째 요청에 200을 반환하도록 실행한 1,000건 장애 복구 run의 실제 기록입니다.",
+      "kind": "로컬 장애 주입 실제 실행",
       "tone": "warn",
+      "execution": {
+        "actual_run": true,
+        "run_id": "ca01ebf6-375a-4adf-94be-97d6f9ef7ca8",
+        "run_created_at": "2026-08-27T04:29:24.184699+00:00",
+        "environment": "local_asgi_fault_injection",
+        "request_statuses": [
+          429,
+          200
+        ],
+        "attempt_ids": [
+          "a9e5728a-9756-4130-b17a-1522d3172b2a",
+          "612a15ad-f2c6-4cb4-bc8f-76960624f18e"
+        ],
+        "response_status": 200,
+        "response_bytes": 486,
+        "response_sha256": "014f737a06aa684d0def02f2c2f06ecc9efb50dbf1d4cc51ec2d74591fb126ce"
+      },
       "input": {
-        "source_label": "CatalogForge unstable fixture",
-        "url": "http://fixture:8101/unstable/117?failures=1",
-        "format": "HTTP 응답 흐름 + JSON-LD",
-        "raw": "[attempt 1]\nHTTP/1.1 429 Too Many Requests\nRetry-After: 0\n\n[attempt 2]\nHTTP/1.1 200 OK\n<link rel=\"canonical\" href=\"/products/117\">\n<script type=\"application/ld+json\">\n{\"@type\":\"Product\",\"sku\":\"SKU-117\",\"name\":\"Recovered Product 117\",\"brand\":{\"name\":\"Forge Labs\"},\"category\":\"Fixture\",\"offers\":{\"price\":\"19.90\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}\n</script>"
+        "source_label": "CatalogForge unstable fixture · 실제 attempt",
+        "url": "http://fixture/unstable/120?failures=1",
+        "format": "DB attempt 기록 + 실제 HTTP 200 HTML",
+        "raw": "[\n  {\n    \"attempt\": 1,\n    \"status_code\": 429,\n    \"error_code\": \"http_429\",\n    \"retry_after_seconds\": 0.0,\n    \"created_at\": \"2026-08-27T04:29:24.654198+00:00\"\n  },\n  {\n    \"attempt\": 2,\n    \"status_code\": 200,\n    \"error_code\": null,\n    \"retry_after_seconds\": null,\n    \"created_at\": \"2026-08-27T04:29:26.347836+00:00\"\n  }\n]\n\n[successful response excerpt]\n<link href=\"/products/120\" rel=\"canonical\"/>\n<script type=\"application/ld+json\">{\n  \"@context\":\"https://schema.org\",\"@type\":\"Product\",\"sku\":\"SKU-120\",\n  \"name\":\"Recovered Product 120\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Forge Labs\"},\n  \"category\":\"Fixture\",\"image\":\"/images/120.jpg\",\n  \"offers\":{\"@type\":\"Offer\",\"price\":\"19.90\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}\n}</script>"
       },
       "steps": [
         {
           "title": "첫 요청 실패",
-          "detail": "HTTP 429와 Retry-After 확인"
+          "detail": "실제 attempt 1에 HTTP 429 기록"
         },
         {
-          "title": "재시도 예약",
-          "detail": "지수 backoff를 적용하고 message 유지"
+          "title": "재시도 발행",
+          "detail": "Retry-After와 backoff 정책으로 outbox message 재발행"
         },
         {
           "title": "두 번째 요청 성공",
-          "detail": "HTTP 200의 JSON-LD 상품 추출"
+          "detail": "실제 attempt 2에 HTTP 200 기록"
         },
         {
           "title": "멱등 저장",
-          "detail": "target_id 기준 상품 snapshot 1건 저장"
+          "detail": "target ID 01f6afce-eafe-4f63-9f0d-4b8058dcf5e0에 snapshot 1건 저장"
         }
       ],
       "decision": {
         "status": "stored",
-        "label": "복구 후 저장",
-        "reason": "재시도에 성공했고 동일 target의 중복 snapshot이 없습니다."
+        "label": "복구 후 실제 저장",
+        "reason": "429 이후 재시도에 성공했고 동일 target의 snapshot이 한 건입니다."
       },
       "output": {
+        "id": "b3d0b970-750b-4853-9a92-104fd0eb18f1",
+        "run_id": "ca01ebf6-375a-4adf-94be-97d6f9ef7ca8",
+        "target_id": "01f6afce-eafe-4f63-9f0d-4b8058dcf5e0",
         "source": "fixture_chaos",
-        "external_id": "SKU-117",
-        "canonical_url": "http://fixture:8101/products/117",
-        "title": "Recovered Product 117",
+        "external_id": "SKU-120",
+        "canonical_url": "http://fixture/products/120",
+        "title": "Recovered Product 120",
         "price_amount": "19.90",
         "currency": "USD",
         "availability": "InStock",
         "brand": "Forge Labs",
         "category": "Fixture",
+        "image_url": "http://fixture/images/120.jpg",
+        "captured_at": "2026-08-27T04:29:26.347829+00:00",
         "confidence": 0.985,
-        "required_field_coverage": 1.0,
         "dom_fingerprint": "3fa5dc9e52eb63dd",
+        "field_evidence": {
+          "title": {
+            "value": "Recovered Product 120",
+            "source": "json_ld",
+            "confidence": 0.99,
+            "selector": "$.name"
+          },
+          "brand": {
+            "value": "Forge Labs",
+            "source": "json_ld",
+            "confidence": 0.98,
+            "selector": "$.brand"
+          },
+          "category": {
+            "value": "Fixture",
+            "source": "json_ld",
+            "confidence": 0.98,
+            "selector": "$.category"
+          },
+          "image_url": {
+            "value": "/images/120.jpg",
+            "source": "json_ld",
+            "confidence": 0.98,
+            "selector": "$.image"
+          },
+          "external_id": {
+            "value": "SKU-120",
+            "source": "json_ld",
+            "confidence": 0.99,
+            "selector": "$.sku"
+          },
+          "availability": {
+            "value": "InStock",
+            "source": "json_ld",
+            "confidence": 0.98,
+            "selector": "$.offers.availability"
+          },
+          "price_amount": {
+            "value": "19.90",
+            "source": "json_ld",
+            "confidence": 0.99,
+            "selector": "$.offers.price"
+          },
+          "currency": {
+            "value": "USD",
+            "source": "json_ld",
+            "confidence": 0.99,
+            "selector": "$.offers.priceCurrency"
+          }
+        },
+        "required_field_coverage": 1.0,
         "fetch_attempts": 2,
         "review_required": false
       },
       "evidence": [
         {
           "field": "title",
-          "value": "Recovered Product 117",
+          "value": "Recovered Product 120",
           "method": "json_ld",
           "selector": "$.name",
           "confidence": 0.99
@@ -169,58 +686,115 @@
     },
     {
       "id": "schema-drift",
-      "label": "구조 변경 감지",
-      "short_description": "fallback으로 추출하되 자동 저장은 보류",
-      "description": "사이트 HTML 구조가 바뀌어 기존 parser 경로를 사용할 수 없을 때 semantic metadata로 값을 복구하고 사람 검수로 분리한 합성 표본입니다.",
-      "kind": "합성 drift fixture",
+      "label": "구조 변경 실제 감지",
+      "short_description": "baseline과 다른 HTML을 처리해 review 생성",
+      "description": "같은 source에서 baseline 문서를 먼저 저장한 뒤 변경된 HTML을 실제 처리하여 schema_drift 검수 항목을 만든 기록입니다.",
+      "kind": "로컬 drift 주입 실제 실행",
       "tone": "review",
+      "execution": {
+        "actual_run": true,
+        "run_id": "f32b001f-3ecf-415b-8e89-0671239a8775",
+        "run_created_at": "2026-08-27T04:29:30.946702+00:00",
+        "environment": "local_asgi_drift_injection",
+        "request_statuses": [
+          200
+        ],
+        "attempt_ids": [
+          "f81b7f8d-6bdd-4818-b413-95c52bbcdac6"
+        ],
+        "response_status": 200,
+        "response_bytes": 321,
+        "response_sha256": "2ce10baa13855d50bd57993a9f050f11f8bd1a9464bf3f4bc4c40172401094d0"
+      },
       "input": {
-        "source_label": "CatalogForge drift fixture",
-        "url": "http://fixture:8101/products/91?variant=drift",
-        "format": "변경된 HTML 핵심 일부",
-        "raw": "<meta property=\"og:title\" content=\"Redesigned Product 91\">\n<link rel=\"canonical\" href=\"/products/91\">\n<main class=\"redesigned-card\">\n  <data itemprop=\"price\" value=\"21.90\"></data>\n  <meta itemprop=\"priceCurrency\" content=\"USD\">\n  <span data-availability=\"InStock\"></span>\n</main>"
+        "source_label": "CatalogForge drift fixture · 실제 응답 일부",
+        "url": "http://fixture/products/91?variant=drift",
+        "format": "HTTP 200 changed HTML excerpt",
+        "raw": "<meta content=\"Reliable Product 91\" property=\"og:title\"/>\n<link href=\"/products/91\" rel=\"canonical\"/>\n<main class=\"redesigned-card\"><data content=\"21.90\" itemprop=\"price\" value=\"21.90\"></data><meta content=\"USD\" itemprop=\"priceCurrency\"/><span data-availability=\"InStock\"></span></main>"
       },
       "steps": [
         {
-          "title": "구조 변경",
-          "detail": "기존 JSON-LD·connector selector가 없음"
+          "title": "baseline 저장",
+          "detail": "JSON-LD 문서를 먼저 처리해 source fingerprint 기준 생성"
+        },
+        {
+          "title": "변경 문서 요청",
+          "detail": "실제 changed HTML 요청이 HTTP 200으로 완료"
         },
         {
           "title": "fallback 추출",
-          "detail": "Open Graph와 semantic metadata로 필드 복구"
+          "detail": "Open Graph와 semantic metadata로 필수 필드 4개 복구"
         },
         {
-          "title": "품질 비교",
-          "detail": "fingerprint 변경, 신뢰도 83.2%"
-        },
-        {
-          "title": "검수 분리",
-          "detail": "자동 승인 없이 schema_drift review 생성"
+          "title": "검수 항목 생성",
+          "detail": "실제 review ID 130319a3-c1ab-4248-a653-66af846a70cb를 schema_drift로 저장"
         }
       ],
       "decision": {
         "status": "review",
-        "label": "사람 검수 필요",
-        "reason": "필수 필드는 있지만 구조가 바뀌었고 신뢰도가 90% 미만입니다."
+        "label": "사람 검수 대기",
+        "reason": "문서 fingerprint가 바뀌고 confidence가 기준보다 낮아 자동 승인하지 않았습니다."
       },
       "output": {
+        "id": "10627c98-4400-4e4d-acd0-9cf3813f8b41",
+        "run_id": "f32b001f-3ecf-415b-8e89-0671239a8775",
+        "target_id": "350c2d3f-30c5-49cf-8569-463b01e15a50",
         "source": "fixture_drift",
-        "external_id": "http://fixture:8101/products/91?variant=drift",
-        "canonical_url": "http://fixture:8101/products/91",
-        "title": "Redesigned Product 91",
+        "external_id": "http://fixture/products/91?variant=drift",
+        "canonical_url": "http://fixture/products/91",
+        "title": "Reliable Product 91",
         "price_amount": "21.90",
         "currency": "USD",
         "availability": "InStock",
+        "brand": null,
+        "category": null,
+        "image_url": "http://fixture/products/91?variant=drift",
+        "captured_at": "2026-08-27T04:29:30.954675+00:00",
         "confidence": 0.832,
-        "required_field_coverage": 1.0,
         "dom_fingerprint": "18fdf70e66a429aa",
+        "field_evidence": {
+          "title": {
+            "value": "Reliable Product 91",
+            "source": "semantic_fallback",
+            "confidence": 0.86,
+            "selector": "og:title|h1"
+          },
+          "price_amount": {
+            "value": "21.90",
+            "source": "semantic_fallback",
+            "confidence": 0.84,
+            "selector": "itemprop=price"
+          },
+          "currency": {
+            "value": "USD",
+            "source": "semantic_fallback",
+            "confidence": 0.84,
+            "selector": "itemprop=priceCurrency"
+          },
+          "availability": {
+            "value": "InStock",
+            "source": "semantic_fallback",
+            "confidence": 0.82,
+            "selector": "itemprop=availability"
+          },
+          "external_id": {
+            "value": "http://fixture/products/91?variant=drift",
+            "source": "derived",
+            "confidence": 0.8,
+            "selector": "canonical_url"
+          }
+        },
+        "required_field_coverage": 1.0,
+        "fetch_attempts": 1,
         "review_required": true,
-        "review_reason": "schema_drift"
+        "review_id": "130319a3-c1ab-4248-a653-66af846a70cb",
+        "review_reason": "schema_drift",
+        "review_status": "pending"
       },
       "evidence": [
         {
           "field": "title",
-          "value": "Redesigned Product 91",
+          "value": "Reliable Product 91",
           "method": "semantic_fallback",
           "selector": "og:title|h1",
           "confidence": 0.86

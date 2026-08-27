@@ -28,6 +28,7 @@ catalog-forge-api = "catalog_forge.api:main"
 catalog-forge-worker = "catalog_forge.worker:main"
 catalog-forge-fixture = "catalog_forge.fixture_app:main"
 catalog-forge-benchmark = "catalog_forge.benchmark:main"
+catalog-forge-recorded-demo = "catalog_forge.recorded_demo:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

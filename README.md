@@ -7,7 +7,7 @@
 
 여러 쇼핑몰의 상품 페이지를 동시에 수집하고, 서로 다른 문서 구조를 하나의 상품 형식으로 바꾸는 **웹 데이터 수집·운영 시스템**입니다. 일시적인 요청 실패, 작업자 중단, 사이트 구조 변경이 발생해도 데이터가 유실되거나 잘못 저장되지 않도록 설계했습니다.
 
-> 공개 데모는 외부 사이트를 실시간으로 수집하지 않습니다. 아래 검증을 같은 조건으로 다시 볼 수 있게 만든 읽기 전용 화면입니다.
+> 공개 데모는 외부 사이트를 계속 수집하는 운영 API가 아니라, **실제 pipeline을 실행해 생성한 읽기 전용 snapshot**입니다. 화면의 run UUID, 시각, attempt, 상품, 검수 항목은 손으로 만든 예시가 아닙니다.
 
 ## 30초 요약
 
@@ -36,6 +36,7 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
 | 데이터 무결성 | 유실 0 · 중복 0 | [<code>target_id</code> 기준 멱등 저장](docs/evidence/recovery_rehearsal.json) |
 | 필수 필드 파싱 | 400 / 400 정확 | [상품 100개 × 제목·가격·통화·재고 4개 필드](tests/test_parser.py) |
 | 공개 사이트 연결 | 20 / 20 성공 | [Books to Scrape 목록 1페이지에서 상품 20개 수집](docs/evidence/books_to_scrape_demo.json) |
+| 데모 snapshot | 1,022 / 1,022 성공 | [외부 수집 + 장애 복구 + 구조 변경 감지를 실제 실행한 원본 JSON](web/public/sample-products.json) |
 | 비동기 처리량 | 단일 처리 대비 28.76배 | [10ms 지연을 고정한 1,000페이지 통제 실험](docs/evidence/benchmark.json) |
 | 자동 회귀 검증 | 테스트 20개 통과 | 설정, 파서, 구조 변경, API, SSRF, redirect, 재시도, 복구 |
 | Frontend 보안 점검 | 취약점 0개 | Next.js 16.3.3 기준 <code>npm audit</code> |
@@ -44,14 +45,14 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
 
 ## 라이브 데모에서 볼 수 있는 것
 
-- **한눈에 보기:** 전체 성공률, 복구한 오류, 유실·중복 여부, 파서 정확도
-- **수집 실행:** 각 실행의 대기·처리·재시도·성공·실패 상태와 장애 복구 순서
-- **상품 데이터:** 추출된 값, 원본 수집처, 신뢰도, 문서 구조 지문, 사람 검수 대상
-- **[샘플 데이터](https://zodia8393.github.io/catalog-forge/samples/):** 원본 HTML·HTTP 오류 → 처리 단계 → 정규화 JSON → 필드별 추출 근거
+- **한눈에 보기:** 실제 run 3개의 성공률, 복구한 429, 유실·중복, 선택한 상품의 필수 필드
+- **수집 실행:** 실제 UUID와 생성 시각, 상태별 건수, 장애 복구 순서
+- **상품 데이터:** DB에 저장된 실제 product UUID, 값, 신뢰도, 문서 구조 지문, 검수 여부
+- **[샘플 데이터](https://zodia8393.github.io/catalog-forge/samples/):** 실제 HTML·attempt → 처리 단계 → 저장 JSON → 필드 근거와 응답 SHA-256
 
 ## 실제 입출력 샘플
 
-공개 스크래핑 sandbox에서 가져온 상품 1건은 다음과 같이 공통 상품 형식으로 바뀝니다. 429 오류 복구와 문서 구조 변경 표본까지 포함한 전체 데이터는 [JSON 파일](web/public/sample-products.json)로 내려받을 수 있습니다.
+공개 스크래핑 sandbox에 실제 요청해 가져온 상품 1건은 다음과 같이 공통 상품 형식으로 바뀝니다. 429 오류 복구와 문서 구조 변경도 로컬 ASGI fixture에 실제 요청해 검증했습니다. run·attempt·product·review 전체 기록은 [실제 실행 JSON](web/public/sample-products.json)으로 내려받을 수 있습니다.
 
 ~~~text
 입력 HTML
@@ -144,6 +145,7 @@ curl -X POST http://localhost:8100/api/v1/crawl-runs \
 pip install -e ".[dev]"
 PYTHONPATH=src python3 -m pytest -q
 PYTHONPATH=src python3 -m catalog_forge.rehearsal --targets 1000 --output-root /tmp/catalog-forge
+PYTHONPATH=src python3 -m catalog_forge.recorded_demo --public-products 20 --recovery-targets 1000 --output web/public/sample-products.json
 
 cd web
 npm ci
@@ -158,9 +160,17 @@ npm run build
 PYTHONPATH=src python3 -m catalog_forge.public_demo --products 20 --output-root /tmp/catalog-forge
 ~~~
 
+`recorded_demo` 명령은 다음 세 run을 순서대로 실제 실행하고 하나의 snapshot을 만듭니다.
+
+1. 로컬 ASGI fixture 상품 1,000개 처리: 429 83건 재시도, 중단 message 17건 회수
+2. allowlist에 등록된 Books to Scrape 상품 20개 실제 HTTP 수집
+3. baseline HTML 다음에 변경 HTML을 처리해 `schema_drift` review 1건 생성
+
+생성 파일에는 실제 UUID·UTC 시각·HTTP 상태·attempt ID·응답 크기와 SHA-256이 포함됩니다. 전체 외부 HTML은 저장하지 않고 화면에 필요한 실제 excerpt만 포함합니다.
+
 ## 현재 범위와 한계
 
 - v1은 login, CAPTCHA, proxy rotation, 차단 우회를 지원하지 않습니다.
 - LLM 기반 속성 추출은 재현 가능한 파싱·복구 품질을 먼저 증명하기 위해 제외했습니다.
-- GitHub Pages 데모는 검증 결과를 보여주는 읽기 전용 화면이며 공개 쓰기 API를 노출하지 않습니다.
+- GitHub Pages 데모는 실제 실행 snapshot을 보여주는 읽기 전용 화면이며 공개 쓰기 API를 노출하지 않습니다.
 - 실제 상용 수집처를 추가할 때는 사이트 약관, robots 정책, 요청량 예산을 별도로 검토해야 합니다.

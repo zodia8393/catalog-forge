@@ -73,6 +73,9 @@ async def test_transient_failure_is_requeued_and_recovers(tmp_path: Path) -> Non
     retry = (await queue.read("test"))[0]
     assert await processor.process(retry.payload) == "succeeded"
     assert len(store.list_products()) == 1
+    attempts = store.list_fetch_attempts()
+    assert [attempt["status_code"] for attempt in attempts] == [429, 200]
+    assert [attempt["error_code"] for attempt in attempts] == ["http_429", None]
     await client.aclose()
 
 

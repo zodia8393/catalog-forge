@@ -1,3 +1,5 @@
+import recordedDataset from "../public/sample-products.json";
+
 export type Run = {
   id: string;
   connector: string;
@@ -20,6 +22,7 @@ export type Product = {
   availability: string;
   confidence: number;
   dom_fingerprint: string;
+  review_required: boolean;
 };
 
 const connectorLabels: Record<string, string> = {
@@ -55,92 +58,14 @@ export function displayAvailability(availability: string) {
   return availabilityLabels[availability] ?? availability;
 }
 
-export const replayRuns: Run[] = [
-  {
-    id: "run-chaos-1000",
-    connector: "fixture_chaos",
-    status: "succeeded",
-    created_at: "2026-08-27T09:30:00+09:00",
-    queued: 0,
-    running: 0,
-    retrying: 0,
-    succeeded: 1000,
-    failed: 0,
-    blocked: 0,
-  },
-  {
-    id: "run-books-20",
-    connector: "books_to_scrape",
-    status: "succeeded",
-    created_at: "2026-08-27T09:42:00+09:00",
-    queued: 0,
-    running: 0,
-    retrying: 0,
-    succeeded: 20,
-    failed: 0,
-    blocked: 0,
-  },
-  {
-    id: "run-drift-holdout",
-    connector: "fixture_drift",
-    status: "succeeded",
-    created_at: "2026-08-27T09:48:00+09:00",
-    queued: 0,
-    running: 0,
-    retrying: 0,
-    succeeded: 2,
-    failed: 0,
-    blocked: 0,
-  },
-];
-
-export const replayProducts: Product[] = [
-  {
-    id: "p-001",
-    title: "Reliable Product 42",
-    source: "fixture_chaos",
-    price_amount: "52.90",
-    currency: "USD",
-    availability: "InStock",
-    confidence: 0.985,
-    dom_fingerprint: "3fa5dc9e52eb63dd",
-  },
-  {
-    id: "p-002",
-    title: "A Light in the Attic",
-    source: "books_to_scrape",
-    price_amount: "51.77",
-    currency: "GBP",
-    availability: "In stock (22 available)",
-    confidence: 0.97,
-    dom_fingerprint: "69b715b335c5081b",
-  },
-  {
-    id: "p-003",
-    title: "Redesigned Product 91",
-    source: "fixture_drift",
-    price_amount: "21.90",
-    currency: "USD",
-    availability: "InStock",
-    confidence: 0.832,
-    dom_fingerprint: "18fdf70e66a429aa",
-  },
-  {
-    id: "p-004",
-    title: "Recovered Product 117",
-    source: "fixture_chaos",
-    price_amount: "19.90",
-    currency: "USD",
-    availability: "InStock",
-    confidence: 0.985,
-    dom_fingerprint: "3fa5dc9e52eb63dd",
-  },
-];
-
-export const replayTimeline = [
-  { time: "09:30:00", event: "수집 실행 접수", detail: "대상 1,000개를 중복 방지 키와 함께 저장" },
-  { time: "09:30:02", event: "요청 제한 감지", detail: "429 응답 83건을 확인하고 Retry-After에 맞춰 재시도" },
-  { time: "09:30:07", event: "중단 작업 회수", detail: "작업자 중단을 가정해 멈춘 메시지 17건을 다른 작업자가 처리" },
-  { time: "09:30:13", event: "문서 구조 변경 감지", detail: "DOM fingerprint가 바뀐 상품 1건을 사람 검수로 분리" },
-  { time: "09:30:21", event: "수집 실행 완료", detail: "1,000건 처리 완료 · 유실 0 · 중복 0" },
-];
+export const recordedAt = new Intl.DateTimeFormat("ko-KR", {
+  dateStyle: "medium",
+  timeStyle: "medium",
+  timeZone: "Asia/Seoul",
+}).format(new Date(recordedDataset.generated_at));
+export const recordedCommand = recordedDataset.generator_command;
+export const recordedMetrics = recordedDataset.metrics;
+export const recordedSources = recordedDataset.sources;
+export const replayRuns: Run[] = recordedDataset.runs;
+export const replayProducts: Product[] = recordedDataset.products;
+export const replayTimeline = recordedDataset.timeline;

@@ -465,6 +465,28 @@ class Store:
             rows = connection.execute(statement.order_by(products.c.captured_at.desc()).limit(limit)).mappings()
             return [_json_row(row) for row in rows]
 
+    def list_fetch_attempts(
+        self,
+        *,
+        run_id: UUID | None = None,
+        target_id: UUID | None = None,
+        limit: int = 1000,
+    ) -> list[dict[str, Any]]:
+        statement = select(
+            fetch_attempts,
+            crawl_targets.c.url,
+            crawl_targets.c.run_id,
+        ).join(crawl_targets, fetch_attempts.c.target_id == crawl_targets.c.id)
+        if run_id is not None:
+            statement = statement.where(crawl_targets.c.run_id == str(run_id))
+        if target_id is not None:
+            statement = statement.where(fetch_attempts.c.target_id == str(target_id))
+        with self.engine.connect() as connection:
+            rows = connection.execute(
+                statement.order_by(fetch_attempts.c.created_at, fetch_attempts.c.attempt).limit(limit)
+            ).mappings()
+            return [_json_row(row) for row in rows]
+
     def list_review_items(self, status: str = "pending", limit: int = 100) -> list[dict[str, Any]]:
         statement = (
             select(

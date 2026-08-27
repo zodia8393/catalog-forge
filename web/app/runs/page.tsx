@@ -1,6 +1,7 @@
 import {
   displayConnector,
   displayStatus,
+  recordedAt,
   replayRuns,
   replayTimeline,
 } from "../data";
@@ -14,11 +15,11 @@ export default function RunsPage() {
           <h1>실패를 숨기지 않고 상태로 관리합니다</h1>
           <p>각 수집 대상이 대기, 처리, 재시도, 성공, 실패 중 어디에 있는지 기록합니다.</p>
         </div>
-        <span className="mode replay">읽기 전용 데모</span>
+        <span className="mode replay">실제 실행 snapshot</span>
       </header>
       <section className="demo-note" aria-label="표 읽는 방법">
-        <strong>표 읽는 방법</strong>
-        <span>실패한 요청은 재시도 상태를 거쳐 성공하거나, 복구할 수 없는 경우에만 최종 실패·차단으로 끝납니다.</span>
+        <strong>{recordedAt} KST 실제 실행 결과</strong>
+        <span>UUID, 생성 시각, 상태별 건수는 generator가 pipeline DB에서 읽어 기록한 값입니다.</span>
       </section>
       <section className="panel">
         <div className="table-wrap">
@@ -30,7 +31,7 @@ export default function RunsPage() {
       </section>
       <section className="panel trace-panel">
         <div className="panel-head">
-          <div><span className="eyebrow">선택한 실행</span><h2>run-chaos-1000</h2></div>
+          <div><span className="eyebrow">선택한 실제 실행</span><h2 className="mono run-title">{replayRuns[0].id}</h2></div>
           <span className="healthy">복구 완료</span>
         </div>
         <ol className="timeline horizontal">{replayTimeline.map((item,index)=><li key={item.time}><span className={index===replayTimeline.length-1?"done":""}/><time>{item.time}</time><div><strong>{item.event}</strong><small>{item.detail}</small></div></li>)}</ol>

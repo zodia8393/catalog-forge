@@ -66,6 +66,7 @@ class TargetProcessor:
             )
             return "succeeded"
         except FetchError as exc:
+            status_code = exc.status_code or status_code
             latency_ms = (time.perf_counter() - started) * 1000
             self.store.record_attempt(
                 FetchAttemptRecord(
