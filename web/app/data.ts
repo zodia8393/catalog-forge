@@ -40,6 +40,7 @@ const statusLabels: Record<string, string> = {
 const availabilityLabels: Record<string, string> = {
   InStock: "재고 있음",
   "In stock (3 available)": "재고 있음 (3개)",
+  "In stock (22 available)": "재고 있음 (22개)",
 };
 
 export function displayConnector(connector: string) {
@@ -101,18 +102,18 @@ export const replayProducts: Product[] = [
     price_amount: "52.90",
     currency: "USD",
     availability: "InStock",
-    confidence: 0.992,
-    dom_fingerprint: "2a41c9fdf1b71521",
+    confidence: 0.985,
+    dom_fingerprint: "3fa5dc9e52eb63dd",
   },
   {
     id: "p-002",
-    title: "The Lean Startup",
+    title: "A Light in the Attic",
     source: "books_to_scrape",
-    price_amount: "33.92",
+    price_amount: "51.77",
     currency: "GBP",
-    availability: "In stock (3 available)",
-    confidence: 0.973,
-    dom_fingerprint: "813c1ce9fd4e6014",
+    availability: "In stock (22 available)",
+    confidence: 0.97,
+    dom_fingerprint: "69b715b335c5081b",
   },
   {
     id: "p-003",
@@ -121,8 +122,8 @@ export const replayProducts: Product[] = [
     price_amount: "21.90",
     currency: "USD",
     availability: "InStock",
-    confidence: 0.835,
-    dom_fingerprint: "91d34c10af054d72",
+    confidence: 0.832,
+    dom_fingerprint: "18fdf70e66a429aa",
   },
   {
     id: "p-004",
@@ -131,8 +132,8 @@ export const replayProducts: Product[] = [
     price_amount: "19.90",
     currency: "USD",
     availability: "InStock",
-    confidence: 0.989,
-    dom_fingerprint: "2a41c9fdf1b71521",
+    confidence: 0.985,
+    dom_fingerprint: "3fa5dc9e52eb63dd",
   },
 ];
 

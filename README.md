@@ -47,6 +47,34 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
 - **한눈에 보기:** 전체 성공률, 복구한 오류, 유실·중복 여부, 파서 정확도
 - **수집 실행:** 각 실행의 대기·처리·재시도·성공·실패 상태와 장애 복구 순서
 - **상품 데이터:** 추출된 값, 원본 수집처, 신뢰도, 문서 구조 지문, 사람 검수 대상
+- **[샘플 데이터](https://zodia8393.github.io/catalog-forge/samples/):** 원본 HTML·HTTP 오류 → 처리 단계 → 정규화 JSON → 필드별 추출 근거
+
+## 실제 입출력 샘플
+
+공개 스크래핑 sandbox에서 가져온 상품 1건은 다음과 같이 공통 상품 형식으로 바뀝니다. 429 오류 복구와 문서 구조 변경 표본까지 포함한 전체 데이터는 [JSON 파일](web/public/sample-products.json)로 내려받을 수 있습니다.
+
+~~~text
+입력 HTML
+<h1>A Light in the Attic</h1>
+<td>£51.77</td>
+<td>In stock (22 available)</td>
+
+             ↓ site selector + quality gate
+
+출력 JSON
+{
+  "source": "books_to_scrape",
+  "external_id": "a897fe39b1053632",
+  "title": "A Light in the Attic",
+  "price_amount": "51.77",
+  "currency": "GBP",
+  "availability": "In stock (22 available)",
+  "confidence": 0.97,
+  "review_required": false
+}
+~~~
+
+![CatalogForge 입력부터 결과까지 샘플 화면](docs/sample-data-preview.png)
 
 ![CatalogForge 한국어 운영 화면](docs/dashboard-preview.png)
 

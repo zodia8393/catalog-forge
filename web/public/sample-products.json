@@ -1,0 +1,252 @@
+{
+  "dataset": "CatalogForge sample pipeline",
+  "version": "1.0",
+  "recorded_at": "2026-08-27T13:02:20+09:00",
+  "cases": [
+    {
+      "id": "public-selector",
+      "label": "공개 사이트 수집",
+      "short_description": "실제 HTML을 사이트별 selector로 구조화",
+      "description": "스크래핑 연습용 공개 사이트의 목록에서 상품 URL을 찾고, 상품 HTML을 공통 상품 형식으로 변환한 표본입니다.",
+      "kind": "공개 sandbox",
+      "tone": "good",
+      "input": {
+        "source_label": "Books to Scrape",
+        "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+        "format": "HTML 핵심 일부",
+        "raw": "<div class=\"product_main\">\n  <h1>A Light in the Attic</h1>\n  <p class=\"price_color\">£51.77</p>\n  <p class=\"instock availability\">In stock (22 available)</p>\n</div>\n<tr><th>UPC</th><td>a897fe39b1053632</td></tr>\n<tr><th>Product Type</th><td>Books</td></tr>\n<tr><th>Price (incl. tax)</th><td>£51.77</td></tr>"
+      },
+      "steps": [
+        {
+          "title": "목록 발견",
+          "detail": "목록 1페이지에서 상품 URL 20개 발견"
+        },
+        {
+          "title": "HTML 요청",
+          "detail": "상품 페이지 HTTP 200 응답 확인"
+        },
+        {
+          "title": "필드 추출",
+          "detail": "사이트별 selector로 제목·가격·통화·재고 추출"
+        },
+        {
+          "title": "품질 통과",
+          "detail": "필수 필드 4/4, 신뢰도 97.0%"
+        }
+      ],
+      "decision": {
+        "status": "stored",
+        "label": "자동 저장",
+        "reason": "필수 필드가 모두 있고 신뢰도가 90% 이상입니다."
+      },
+      "output": {
+        "source": "books_to_scrape",
+        "external_id": "a897fe39b1053632",
+        "canonical_url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+        "title": "A Light in the Attic",
+        "price_amount": "51.77",
+        "currency": "GBP",
+        "availability": "In stock (22 available)",
+        "category": "Books",
+        "confidence": 0.97,
+        "required_field_coverage": 1.0,
+        "dom_fingerprint": "69b715b335c5081b",
+        "review_required": false
+      },
+      "evidence": [
+        {
+          "field": "title",
+          "value": "A Light in the Attic",
+          "method": "source_selector",
+          "selector": ".product_main h1",
+          "confidence": 0.97
+        },
+        {
+          "field": "price_amount",
+          "value": "51.77",
+          "method": "source_selector",
+          "selector": "table:Price (incl. tax)",
+          "confidence": 0.98
+        },
+        {
+          "field": "currency",
+          "value": "GBP",
+          "method": "source_selector",
+          "selector": "table:Price (incl. tax)",
+          "confidence": 0.98
+        },
+        {
+          "field": "availability",
+          "value": "In stock (22 available)",
+          "method": "source_selector",
+          "selector": "table:Availability",
+          "confidence": 0.96
+        }
+      ]
+    },
+    {
+      "id": "retry-recovery",
+      "label": "429 오류 복구",
+      "short_description": "실패한 요청을 재시도해 중복 없이 저장",
+      "description": "첫 요청에서 429가 발생한 뒤 Retry-After와 backoff를 적용해 다시 요청하고, 성공 결과를 한 번만 저장한 합성 장애 표본입니다.",
+      "kind": "합성 장애 fixture",
+      "tone": "warn",
+      "input": {
+        "source_label": "CatalogForge unstable fixture",
+        "url": "http://fixture:8101/unstable/117?failures=1",
+        "format": "HTTP 응답 흐름 + JSON-LD",
+        "raw": "[attempt 1]\nHTTP/1.1 429 Too Many Requests\nRetry-After: 0\n\n[attempt 2]\nHTTP/1.1 200 OK\n<link rel=\"canonical\" href=\"/products/117\">\n<script type=\"application/ld+json\">\n{\"@type\":\"Product\",\"sku\":\"SKU-117\",\"name\":\"Recovered Product 117\",\"brand\":{\"name\":\"Forge Labs\"},\"category\":\"Fixture\",\"offers\":{\"price\":\"19.90\",\"priceCurrency\":\"USD\",\"availability\":\"https://schema.org/InStock\"}}\n</script>"
+      },
+      "steps": [
+        {
+          "title": "첫 요청 실패",
+          "detail": "HTTP 429와 Retry-After 확인"
+        },
+        {
+          "title": "재시도 예약",
+          "detail": "지수 backoff를 적용하고 message 유지"
+        },
+        {
+          "title": "두 번째 요청 성공",
+          "detail": "HTTP 200의 JSON-LD 상품 추출"
+        },
+        {
+          "title": "멱등 저장",
+          "detail": "target_id 기준 상품 snapshot 1건 저장"
+        }
+      ],
+      "decision": {
+        "status": "stored",
+        "label": "복구 후 저장",
+        "reason": "재시도에 성공했고 동일 target의 중복 snapshot이 없습니다."
+      },
+      "output": {
+        "source": "fixture_chaos",
+        "external_id": "SKU-117",
+        "canonical_url": "http://fixture:8101/products/117",
+        "title": "Recovered Product 117",
+        "price_amount": "19.90",
+        "currency": "USD",
+        "availability": "InStock",
+        "brand": "Forge Labs",
+        "category": "Fixture",
+        "confidence": 0.985,
+        "required_field_coverage": 1.0,
+        "dom_fingerprint": "3fa5dc9e52eb63dd",
+        "fetch_attempts": 2,
+        "review_required": false
+      },
+      "evidence": [
+        {
+          "field": "title",
+          "value": "Recovered Product 117",
+          "method": "json_ld",
+          "selector": "$.name",
+          "confidence": 0.99
+        },
+        {
+          "field": "price_amount",
+          "value": "19.90",
+          "method": "json_ld",
+          "selector": "$.offers.price",
+          "confidence": 0.99
+        },
+        {
+          "field": "currency",
+          "value": "USD",
+          "method": "json_ld",
+          "selector": "$.offers.priceCurrency",
+          "confidence": 0.99
+        },
+        {
+          "field": "availability",
+          "value": "InStock",
+          "method": "json_ld",
+          "selector": "$.offers.availability",
+          "confidence": 0.98
+        }
+      ]
+    },
+    {
+      "id": "schema-drift",
+      "label": "구조 변경 감지",
+      "short_description": "fallback으로 추출하되 자동 저장은 보류",
+      "description": "사이트 HTML 구조가 바뀌어 기존 parser 경로를 사용할 수 없을 때 semantic metadata로 값을 복구하고 사람 검수로 분리한 합성 표본입니다.",
+      "kind": "합성 drift fixture",
+      "tone": "review",
+      "input": {
+        "source_label": "CatalogForge drift fixture",
+        "url": "http://fixture:8101/products/91?variant=drift",
+        "format": "변경된 HTML 핵심 일부",
+        "raw": "<meta property=\"og:title\" content=\"Redesigned Product 91\">\n<link rel=\"canonical\" href=\"/products/91\">\n<main class=\"redesigned-card\">\n  <data itemprop=\"price\" value=\"21.90\"></data>\n  <meta itemprop=\"priceCurrency\" content=\"USD\">\n  <span data-availability=\"InStock\"></span>\n</main>"
+      },
+      "steps": [
+        {
+          "title": "구조 변경",
+          "detail": "기존 JSON-LD·connector selector가 없음"
+        },
+        {
+          "title": "fallback 추출",
+          "detail": "Open Graph와 semantic metadata로 필드 복구"
+        },
+        {
+          "title": "품질 비교",
+          "detail": "fingerprint 변경, 신뢰도 83.2%"
+        },
+        {
+          "title": "검수 분리",
+          "detail": "자동 승인 없이 schema_drift review 생성"
+        }
+      ],
+      "decision": {
+        "status": "review",
+        "label": "사람 검수 필요",
+        "reason": "필수 필드는 있지만 구조가 바뀌었고 신뢰도가 90% 미만입니다."
+      },
+      "output": {
+        "source": "fixture_drift",
+        "external_id": "http://fixture:8101/products/91?variant=drift",
+        "canonical_url": "http://fixture:8101/products/91",
+        "title": "Redesigned Product 91",
+        "price_amount": "21.90",
+        "currency": "USD",
+        "availability": "InStock",
+        "confidence": 0.832,
+        "required_field_coverage": 1.0,
+        "dom_fingerprint": "18fdf70e66a429aa",
+        "review_required": true,
+        "review_reason": "schema_drift"
+      },
+      "evidence": [
+        {
+          "field": "title",
+          "value": "Redesigned Product 91",
+          "method": "semantic_fallback",
+          "selector": "og:title|h1",
+          "confidence": 0.86
+        },
+        {
+          "field": "price_amount",
+          "value": "21.90",
+          "method": "semantic_fallback",
+          "selector": "itemprop=price",
+          "confidence": 0.84
+        },
+        {
+          "field": "currency",
+          "value": "USD",
+          "method": "semantic_fallback",
+          "selector": "itemprop=priceCurrency",
+          "confidence": 0.84
+        },
+        {
+          "field": "availability",
+          "value": "InStock",
+          "method": "semantic_fallback",
+          "selector": "itemprop=availability",
+          "confidence": 0.82
+        }
+      ]
+    }
+  ]
+}

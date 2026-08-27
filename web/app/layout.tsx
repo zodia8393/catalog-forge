@@ -11,6 +11,7 @@ const nav = [
   ["한눈에 보기", "/"],
   ["수집 실행", "/runs/"],
   ["상품 데이터", "/products/"],
+  ["샘플 데이터", "/samples/"],
 ];
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
