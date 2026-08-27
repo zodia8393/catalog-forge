@@ -1,4 +1,4 @@
-# 쇼포트 Web Scraping 포지션 대응
+# Web Scraping 포지션 대응
 
 | 공고 요구 | CatalogForge evidence |
 |---|---|

@@ -120,7 +120,7 @@ FastAPI ──→ PostgreSQL + transactional outbox
 
 상세 내용은 [시스템 설계](docs/system_design.md), [상품 데이터 계약](docs/data_contract.md), [채용 공고와의 연결](docs/hiring_market_alignment.md), [재현 방법](docs/reproducibility.md)에서 확인할 수 있습니다.
 
-## 쇼포트 업무와 연결되는 부분
+## Web Scraping 실무와 연결되는 부분
 
 | 채용 공고의 업무 | CatalogForge에서 구현한 경험 |
 |---|---|
