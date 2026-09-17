@@ -9,7 +9,17 @@
 
 > 공개 데모의 **실시간 체험**은 입력 HTML을 browser 안에서 즉시 파싱하며, 운영 화면은 **실제 pipeline을 실행해 생성한 읽기 전용 snapshot**입니다. URL proxy나 공개 쓰기 API는 노출하지 않습니다.
 
-## 30초 요약
+## 코드 읽는 순서
+
+| 확인할 설계 | 구현 | 검증 |
+| --- | --- | --- |
+| 입력 HTML → 공통 상품 필드 | [parser.py](src/catalog_forge/parser.py) | [파서 테스트](tests/test_parser.py) |
+| 요청 정책·오류·재시도 | [fetcher.py](src/catalog_forge/fetcher.py), [reliability.py](src/catalog_forge/reliability.py) | [요청 테스트](tests/test_fetcher.py), [복구 규칙 테스트](tests/test_reliability.py) |
+| 작업 처리와 저장 | [worker.py](src/catalog_forge/worker.py), [storage.py](src/catalog_forge/storage.py) | [파이프라인 테스트](tests/test_pipeline.py) |
+
+실제 수집·복구 근거는 아래 **검증된 결과**에 연결했습니다. 실행 기록과 현재 서비스 상태, 통제 실험의 처리량과 실제 사이트 성능을 구분합니다.
+
+### 처리 흐름
 
 ~~~text
 상품 URL 등록
@@ -45,7 +55,7 @@ CatalogForge의 핵심은 “많이 긁는 크롤러”가 아니라 **실패를
 | 데모 snapshot | 1,022 / 1,022 성공 | [외부 수집 + 장애 복구 + 구조 변경 감지를 실제 실행한 원본 JSON](web/public/sample-products.json) |
 | 비동기 처리량 | 단일 처리 대비 28.76배 | [10ms 지연을 고정한 1,000페이지 통제 실험](docs/evidence/benchmark.json) |
 | 자동 회귀 검증 | 테스트 20개 통과 | 설정, 파서, 구조 변경, API, SSRF, redirect, 재시도, 복구 |
-| Frontend 보안 점검 | 취약점 0개 | Next.js 16.3.3 기준 <code>npm audit</code> |
+| Frontend 보안 점검 | 당시 취약점 0개 | 2026-08-27 기록 · 현재 의존성 안전성을 보장하지 않음 |
 
 처리량 수치는 실제 쇼핑몰 성능을 과장하지 않도록 네트워크 지연을 10ms로 고정한 비교 실험입니다. 실제 수집 속도는 대상 사이트의 응답 시간과 요청 정책에 따라 달라집니다.
 
